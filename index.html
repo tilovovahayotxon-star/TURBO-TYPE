@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#03060d">
+<title>🏎️ Typing Race PRO — Premium Edition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#03060d;
+  --neon-blue:#00d4ff; --neon-cyan:#00fff0; --neon-pink:#ff0080;
+  --neon-purple:#b429ff; --neon-gold:#ffcc00; --neon-green:#00ff88;
+  --neon-red:#ff2244; --neon-orange:#ff8800;
+  --glass:rgba(15,25,45,0.55); --glass-light:rgba(30,50,90,0.35);
+  --glass-border:rgba(0,212,255,0.35);
+  --text:#eaf4ff; --text-dim:#6a8db8;
+  --rank-bronze:#cd7f32; --rank-silver:#c0c0c0; --rank-gold:#ffd700;
+  --rank-plat:#00e5ff; --rank-diamond:#b9f2ff; --rank-gm:#ff3366;
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Rajdhani',system-ui,sans-serif;background:var(--bg);color:var(--text);font-weight:600}
+
+/* ============ BACKGROUNDS ============ */
+body::before{
+  content:'';position:fixed;inset:-20%;z-index:-3;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(0,212,255,0.22) 0,transparent 35%),
+    radial-gradient(circle at 80% 20%,rgba(180,41,255,0.2) 0,transparent 35%),
+    radial-gradient(circle at 60% 80%,rgba(0,255,240,0.15) 0,transparent 35%),
+    radial-gradient(circle at 30% 90%,rgba(255,0,128,0.15) 0,transparent 35%);
+  animation:auroraMove 22s ease-in-out infinite;
+  filter:blur(40px);
+}
+@keyframes auroraMove{0%,100%{transform:rotate(0) scale(1)}33%{transform:rotate(120deg) scale(1.15)}66%{transform:rotate(240deg) scale(0.95)}}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-2;
+  background-image:linear-gradient(rgba(0,212,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.06) 1px,transparent 1px);
+  background-size:50px 50px;
+  mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%);
+  animation:gridScroll 30s linear infinite;
+}
+@keyframes gridScroll{0%{background-position:0 0,0 0}100%{background-position:0 50px,50px 0}}
+
+/* ============ SCREEN ============ */
+.screen{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,rgba(8,15,30,0.85),rgba(2,4,10,0.98));
+  text-align:center;padding:20px;overflow-y:auto;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.screen.hidden{display:none}
+
+/* ============ LOGO ============ */
+.logo{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(36px,7vw,76px);font-weight:900;letter-spacing:8px;
+  background:linear-gradient(135deg,#00d4ff 0%,#00fff0 25%,#ffcc00 50%,#ff0080 75%,#b429ff 100%);
+  background-size:300% auto;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 5s linear infinite;margin-bottom:8px;
+  filter:drop-shadow(0 0 30px rgba(0,212,255,0.7));
+}
+@keyframes shine{to{background-position:300% center}}
+.subtitle{font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:8px;color:var(--neon-cyan);opacity:0.9;margin-bottom:28px;text-transform:uppercase;font-weight:700;text-shadow:0 0 20px var(--neon-cyan)}
+
+/* ============ TOP BAR (coins/level) ============ */
+.top-bar{
+  position:absolute;top:16px;right:16px;display:flex;gap:8px;z-index:20;
+}
+.top-chip{
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;
+  padding:8px 14px;display:flex;align-items:center;gap:8px;
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;
+  backdrop-filter:blur(20px);
+  box-shadow:0 4px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.top-chip svg{width:16px;height:16px}
+.top-chip .val{color:var(--neon-gold);text-shadow:0 0 10px var(--neon-gold)}
+
+/* ============ PLAYER PROFILE ============ */
+.profile-card{
+  background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:20px;padding:20px 26px;margin-bottom:20px;
+  backdrop-filter:blur(20px);display:flex;gap:18px;align-items:center;
+  box-shadow:0 12px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative;overflow:hidden;min-width:340px;max-width:460px;
+}
+.profile-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--neon-cyan),transparent);
+}
+.profile-avatar{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,#00d4ff,#b429ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;
+  box-shadow:0 0 25px rgba(0,212,255,0.7),inset 0 2px 4px rgba(255,255,255,0.3);
+  position:relative;
+}
+.profile-avatar::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--neon-cyan),var(--neon-pink),var(--neon-gold),var(--neon-cyan));
+  z-index:-1;animation:spin 3s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.profile-info{flex:1;text-align:left}
+.profile-name{
+  font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;
+  color:#fff;text-shadow:0 0 10px var(--neon-cyan);
+}
+.profile-rank{
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;
+  margin-top:4px;text-transform:uppercase;
+}
+.profile-xp-bar{
+  height:6px;background:rgba(0,0,0,0.5);border-radius:3px;margin-top:8px;overflow:hidden;
+  border:1px solid rgba(0,212,255,0.3);
+}
+.profile-xp-fill{
+  height:100%;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-gold));
+  border-radius:3px;transition:width 0.5s;box-shadow:0 0 10px var(--neon-cyan);
+}
+.profile-xp-text{
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;
+  color:var(--text-dim);margin-top:4px;
+}
+
+/* ============ MENU BUTTONS ============ */
+.menu-buttons{display:flex;flex-direction:column;gap:12px;min-width:340px;max-width:440px;width:100%}
+.menu-btn{
+  padding:16px 28px;
+  background:linear-gradient(135deg,rgba(15,25,45,0.85),rgba(30,50,90,0.6));
+  border:1.5px solid var(--glass-border);border-radius:14px;color:#fff;
+  font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;overflow:hidden;backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.menu-btn::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+  transition:left 0.6s;
+}
+.menu-btn:hover::before{left:100%}
+.menu-btn:hover{
+  transform:translateY(-4px);
+  border-color:var(--neon-cyan);
+  background:linear-gradient(135deg,rgba(0,212,255,0.25),rgba(180,41,255,0.2));
+  box-shadow:0 14px 50px rgba(0,212,255,0.5),inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.menu-btn:active{transform:translateY(-2px) scale(0.98)}
+.menu-btn.primary{
+  background:linear-gradient(135deg,rgba(0,212,255,0.35),rgba(180,41,255,0.3));
+  border-color:var(--neon-cyan);
+  box-shadow:0 8px 32px rgba(0,212,255,0.4),inset 0 1px 0 rgba(255,255,255,0.2),0 0 40px rgba(0,212,255,0.25);
+}
+.menu-btn.primary:hover{box-shadow:0 16px 60px rgba(0,212,255,0.7),0 0 60px rgba(0,212,255,0.5)}
+.menu-btn.gold{background:linear-gradient(135deg,rgba(255,204,0,0.35),rgba(255,136,0,0.25));border-color:var(--neon-gold)}
+.menu-btn.gold:hover{box-shadow:0 16px 60px rgba(255,204,0,0.6)}
+.menu-btn svg{width:20px;height:20px;flex-shrink:0}
+
+/* ============ BADGE ============ */
+.badge{
+  position:absolute;top:-6px;right:-6px;background:var(--neon-red);
+  color:#fff;font-size:9px;padding:2px 6px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  box-shadow:0 0 12px var(--neon-red);
+  animation:badgePulse 1.5s infinite alternate;
+}
+@keyframes badgePulse{from{transform:scale(1)}to{transform:scale(1.15)}}
+
+/* ============ STATS CHIPS ============ */
+.stats-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;justify-content:center}
+.stat-chip{
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;
+  padding:8px 14px;display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  backdrop-filter:blur(20px);transition:all 0.3s;text-transform:uppercase;
+  font-family:'Orbitron',sans-serif;
+}
+.stat-chip:hover{transform:translateY(-3px);border-color:var(--neon-cyan)}
+.stat-chip svg{width:16px;height:16px}
+.stat-chip .val{color:var(--neon-gold);text-shadow:0 0 10px var(--neon-gold)}
+
+/* ============ DIFFICULTY PICKER ============ */
+.difficulty-buttons{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+.difficulty-btn{
+  padding:10px 18px;background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:10px;color:var(--text-dim);font-family:'Orbitron',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;min-width:90px;
+}
+.difficulty-btn.active{border-color:var(--neon-gold);color:var(--neon-gold);background:rgba(255,204,0,0.15);box-shadow:0 0 20px rgba(255,204,0,0.4)}
+
+/* ============ GAME ============ */
+#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:linear-gradient(180deg,#03060d 0%,#0a1430 30%,#151040 60%,#0a0a20 85%,#03060d 100%)}
+
+/* Weather overlays */
+.weather{position:absolute;inset:0;pointer-events:none;z-index:3}
+.rain-drop{position:absolute;width:2px;height:20px;background:linear-gradient(180deg,transparent,rgba(120,200,255,0.7));animation:rainFall linear infinite}
+@keyframes rainFall{from{transform:translateY(-100px)}to{transform:translateY(100vh)}}
+.snow-flake{position:absolute;width:4px;height:4px;background:#fff;border-radius:50%;opacity:0.8;animation:snowFall linear infinite;box-shadow:0 0 4px #fff}
+@keyframes snowFall{from{transform:translateY(-20px) translateX(0)}to{transform:translateY(100vh) translateX(40px)}}
+
+/* Road */
+.road-perspective{position:absolute;inset:0;perspective:500px;perspective-origin:50% 50%;overflow:hidden;pointer-events:none}
+.road-lines{
+  position:absolute;bottom:0;left:-20%;right:-20%;height:70%;
+  transform:rotateX(72deg);transform-origin:bottom center;
+  background:repeating-linear-gradient(180deg,
+    transparent 0,transparent 30px,
+    rgba(0,212,255,0.6) 30px,rgba(0,212,255,0.6) 33px,
+    transparent 33px,transparent 63px,
+    rgba(255,0,128,0.4) 63px,rgba(255,0,128,0.4) 65px);
+  animation:roadScroll 0.9s linear infinite;
+  filter:drop-shadow(0 0 20px rgba(0,212,255,0.6));
+  opacity:0.7;
+}
+@keyframes roadScroll{to{background-position:0 -96px}}
+.road-edge-l,.road-edge-r{
+  position:absolute;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,transparent,var(--neon-cyan),transparent);
+  box-shadow:0 0 30px var(--neon-cyan),0 0 60px var(--neon-cyan);
+  animation:edgePulse 2s infinite alternate;
+}
+.road-edge-l{left:10px}.road-edge-r{right:10px}
+@keyframes edgePulse{from{opacity:0.5}to{opacity:1}}
+
+.stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.star{position:absolute;background:#fff;border-radius:50%;animation:starTwinkle 3s infinite}
+@keyframes starTwinkle{0%,100%{opacity:0.15;transform:scale(1)}50%{opacity:1;transform:scale(1.6)}}
+
+.speed-line{
+  position:absolute;width:2px;height:100px;
+  background:linear-gradient(180deg,transparent,var(--neon-cyan),transparent);
+  animation:speedLine 0.6s linear infinite;pointer-events:none;
+  box-shadow:0 0 15px var(--neon-cyan);z-index:2;
+}
+@keyframes speedLine{from{transform:translateX(0) scaleY(0.3);opacity:0}20%{opacity:1}to{transform:translateX(-400px) scaleY(1.8);opacity:0}}
+
+/* HUD */
+.hud-top{position:absolute;top:14px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:0 18px;z-index:50;pointer-events:none;gap:8px;flex-wrap:wrap}
+.hud-panel{
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:14px;
+  padding:8px 14px;backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative;overflow:hidden;
+}
+.hud-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon-cyan),transparent);opacity:0.7}
+.hud-lbl{font-size:8px;letter-spacing:2.5px;color:var(--neon-cyan);opacity:0.9;text-transform:uppercase;font-weight:700;font-family:'Orbitron',sans-serif}
+.hud-val{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 16px currentColor;line-height:1.1;letter-spacing:1px}
+.hud-val.small{font-size:14px}
+
+.progress-bar{
+  position:absolute;top:78px;left:18px;right:18px;height:6px;
+  background:rgba(0,0,0,0.6);border-radius:3px;overflow:hidden;z-index:50;
+  border:1px solid rgba(0,212,255,0.35);box-shadow:0 0 20px rgba(0,212,255,0.3);
+}
+.progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--neon-blue),var(--neon-cyan),var(--neon-gold),var(--neon-pink));
+  background-size:300% auto;animation:shine 2s linear infinite;
+  transition:width 0.2s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 0 20px var(--neon-cyan),0 0 40px var(--neon-cyan);
+}
+
+/* Race track */
+.race-track{
+  position:absolute;top:100px;left:18px;right:18px;bottom:290px;
+  background:linear-gradient(180deg,rgba(5,10,25,0.5),rgba(15,25,50,0.3));
+  border:1.5px solid var(--glass-border);border-radius:18px;overflow:hidden;
+  box-shadow:inset 0 0 80px rgba(0,0,0,0.7),0 0 40px rgba(0,212,255,0.15),0 20px 60px rgba(0,0,0,0.5);
+  backdrop-filter:blur(10px);
+}
+.lane{position:absolute;left:0;right:0;height:60px;border-bottom:1px dashed rgba(0,212,255,0.18);transition:background 0.3s}
+.lane:last-child{border-bottom:none}
+.lane.active{background:linear-gradient(90deg,rgba(0,212,255,0.1),transparent 60%);box-shadow:inset 0 0 30px rgba(0,212,255,0.15)}
+
+/* Cars */
+.car{position:absolute;width:70px;height:50px;top:5px;transition:left 0.1s linear;z-index:10;will-change:left,transform;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.7))}
+.car svg{width:100%;height:100%;display:block}
+.car.player{filter:drop-shadow(0 0 12px var(--neon-blue)) drop-shadow(0 6px 12px rgba(0,0,0,0.7))}
+.car.player.turbo{animation:turboPulse 0.3s infinite alternate;filter:drop-shadow(0 0 25px var(--neon-cyan)) drop-shadow(0 0 50px var(--neon-gold))}
+@keyframes turboPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+.car.player::before{
+  content:'SIZ';position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--neon-cyan);
+  letter-spacing:3px;text-shadow:0 0 12px var(--neon-cyan),0 0 20px var(--neon-cyan);
+  z-index:20;white-space:nowrap;
+}
+.car.enemy.frozen{filter:hue-rotate(180deg) brightness(1.4) saturate(0.6) drop-shadow(0 0 15px var(--neon-cyan))}
+.car-label{
+  position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;
+  white-space:nowrap;color:#fff;text-shadow:0 0 8px rgba(0,0,0,1),0 0 12px currentColor;z-index:20;
+}
+.finish-line{
+  position:absolute;top:0;bottom:0;right:0;width:14px;
+  background:repeating-linear-gradient(0deg,#fff 0,#fff 8px,#000 8px,#000 16px);
+  border-left:2px solid var(--neon-gold);
+  box-shadow:-10px 0 40px rgba(255,204,0,0.6),-20px 0 80px rgba(255,204,0,0.4);z-index:5;
+}
+.finish-flag{position:absolute;top:8px;right:-46px;font-size:36px;filter:drop-shadow(0 0 20px var(--neon-gold));animation:flagWave 1s infinite alternate}
+@keyframes flagWave{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+
+/* Typing panel */
+.typing-panel{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  width:min(920px,94vw);background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:20px;padding:16px 20px 20px;backdrop-filter:blur(24px);
+  box-shadow:0 24px 80px rgba(0,0,0,0.7),0 0 60px rgba(0,212,255,0.15),inset 0 1px 0 rgba(255,255,255,0.1);
+  z-index:100;position:relative;
+}
+.typing-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon-cyan),var(--neon-pink),transparent)}
+
+.powerups-row{display:flex;gap:6px;margin-bottom:12px;justify-content:center;flex-wrap:wrap}
+.powerup{
+  background:rgba(0,0,0,0.5);border:1.5px solid rgba(80,150,255,0.3);
+  border-radius:10px;padding:6px 12px;font-family:'Orbitron',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  display:flex;align-items:center;gap:6px;color:var(--text-dim);
+  transition:all 0.3s;min-width:100px;justify-content:center;cursor:pointer;
+}
+.powerup svg{width:14px;height:14px}
+.powerup .pu-count{color:var(--neon-gold);font-weight:900;text-shadow:0 0 8px var(--neon-gold);font-family:'Orbitron',sans-serif}
+.powerup.available{
+  border-color:var(--neon-gold);color:var(--neon-gold);
+  background:linear-gradient(135deg,rgba(255,204,0,0.15),rgba(255,136,0,0.1));
+  box-shadow:0 0 20px rgba(255,204,0,0.4);animation:puReady 1.5s infinite alternate;
+}
+@keyframes puReady{from{box-shadow:0 0 20px rgba(255,204,0,0.4)}to{box-shadow:0 0 40px rgba(255,204,0,0.9)}}
+.powerup.available:hover{transform:translateY(-3px) scale(1.05)}
+.powerup.active{background:linear-gradient(135deg,rgba(0,255,136,0.4),rgba(0,255,240,0.3));border-color:var(--neon-green);color:#fff;animation:activePulse 0.6s infinite alternate}
+@keyframes activePulse{from{box-shadow:0 0 20px var(--neon-green)}to{box-shadow:0 0 45px var(--neon-green)}}
+
+.text-to-type{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(16px,2.4vw,23px);font-weight:700;
+  line-height:1.7;letter-spacing:1.2px;color:var(--text-dim);margin-bottom:12px;min-height:60px;
+  word-spacing:3px;word-break:break-word;padding:12px 16px;background:rgba(0,0,0,0.3);
+  border-radius:12px;border:1px solid rgba(0,212,255,0.15);
+}
+.text-to-type .char{transition:all 0.12s;display:inline-block}
+.text-to-type .char.correct{color:var(--neon-green);text-shadow:0 0 12px var(--neon-green)}
+.text-to-type .char.wrong{color:var(--neon-red);background:rgba(255,34,68,0.25);border-radius:3px;text-shadow:0 0 12px var(--neon-red);animation:wrongShake 0.3s}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-3deg)}75%{transform:translateX(4px) rotate(3deg)}}
+.text-to-type .char.current{color:#fff;background:linear-gradient(180deg,rgba(0,212,255,0.5),rgba(0,212,255,0.3));border-radius:4px;box-shadow:0 0 20px var(--neon-blue),inset 0 0 10px rgba(255,255,255,0.4);animation:caretBlink 0.8s infinite;transform:scale(1.18)}
+.text-to-type .char.critical{color:var(--neon-gold);text-shadow:0 0 15px var(--neon-gold),0 0 30px var(--neon-orange)}
+@keyframes caretBlink{50%{background:rgba(0,212,255,0.15);box-shadow:0 0 10px var(--neon-blue)}}
+
+.input-row{display:flex;gap:10px;align-items:center}
+.typing-input{
+  flex:1;padding:13px 16px;background:rgba(0,0,0,0.5);
+  border:1.5px solid rgba(0,212,255,0.3);border-radius:12px;color:var(--text);
+  font-family:'JetBrains Mono','Rajdhani',monospace;font-size:16px;font-weight:700;
+  letter-spacing:1.5px;outline:none;transition:all 0.2s;
+}
+.typing-input:focus{border-color:var(--neon-cyan);box-shadow:0 0 30px rgba(0,212,255,0.5),inset 0 0 20px rgba(0,212,255,0.1);background:rgba(0,0,0,0.4)}
+.typing-input.error{border-color:var(--neon-red);animation:inputShake 0.3s}
+@keyframes inputShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.typing-input::placeholder{color:rgba(106,141,184,0.6);letter-spacing:2px}
+
+.wpm-display{display:flex;gap:12px;align-items:center;background:rgba(0,0,0,0.5);border:1.5px solid rgba(0,212,255,0.3);border-radius:12px;padding:8px 14px;min-width:170px;justify-content:center}
+.wpm-item{text-align:center}
+.wpm-lbl{font-size:8px;letter-spacing:2px;color:var(--neon-cyan);text-transform:uppercase;font-weight:700;font-family:'Orbitron',sans-serif}
+.wpm-val{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 14px currentColor;line-height:1.1}
+
+/* Live mini chart */
+.live-chart{
+  position:absolute;bottom:18px;right:18px;width:180px;height:80px;
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;
+  padding:8px;backdrop-filter:blur(20px);z-index:90;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+.live-chart svg{width:100%;height:100%}
+.live-chart-title{
+  position:absolute;top:4px;left:8px;font-family:'Orbitron',sans-serif;
+  font-size:7px;letter-spacing:1.5px;color:var(--neon-cyan);text-transform:uppercase;
+}
+
+/* Countdown */
+.countdown{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(3,6,15,0.92);z-index:500;pointer-events:none;backdrop-filter:blur(12px)}
+.countdown.hidden{display:none}
+.countdown-num{
+  font-family:'Orbitron',sans-serif;font-size:clamp(90px,18vw,220px);font-weight:900;
+  background:linear-gradient(135deg,#00d4ff,#00fff0,#ffcc00,#ff0080);
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 80px rgba(0,212,255,0.9));animation:countPop 0.9s ease-out;
+}
+@keyframes countPop{0%{transform:scale(0.3) rotate(-15deg);opacity:0}50%{transform:scale(1.3) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+
+/* Results */
+.result-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0;max-width:520px}
+.stat-box{
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:16px;
+  padding:18px;text-align:center;backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative;overflow:hidden;
+}
+.stat-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon-cyan),transparent)}
+.stat-box .stat-num{font-family:'Orbitron',sans-serif;font-size:30px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 24px var(--neon-gold);line-height:1}
+.stat-box .stat-label{font-size:9px;letter-spacing:3px;color:var(--neon-cyan);opacity:0.9;margin-top:8px;text-transform:uppercase;font-weight:700;font-family:'Orbitron',sans-serif}
+
+.trophy{font-size:100px;margin-bottom:16px;animation:trophyBounce 1s infinite alternate;filter:drop-shadow(0 0 50px var(--neon-gold))}
+@keyframes trophyBounce{from{transform:translateY(0) rotate(-6deg) scale(1)}to{transform:translateY(-18px) rotate(6deg) scale(1.1)}}
+
+/* Effects */
+.streak-wrong{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:var(--neon-red);text-shadow:0 0 40px var(--neon-red),0 0 80px var(--neon-red);pointer-events:none;z-index:600;opacity:0;letter-spacing:6px}
+.streak-wrong.show{animation:streakAnim 0.7s}
+@keyframes streakAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(0.3)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}60%{transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}}
+
+.streak-correct{position:absolute;top:42%;right:60px;font-family:'Orbitron',sans-serif;font-size:44px;font-weight:900;color:var(--neon-green);text-shadow:0 0 30px var(--neon-green),0 0 60px var(--neon-green);pointer-events:none;z-index:600;opacity:0;letter-spacing:4px}
+.streak-correct.show{animation:streakCAnim 1s ease-out}
+@keyframes streakCAnim{0%{opacity:0;transform:scale(0.3) rotate(-10deg)}30%{opacity:1;transform:scale(1.4) rotate(3deg)}40%{transform:scale(1) rotate(0)}80%{opacity:1}100%{opacity:0;transform:scale(1.15)}}
+
+/* Particles */
+.particle{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:400;animation:particleFly 1s ease-out forwards}
+@keyframes particleFly{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)}}
+
+.shake{animation:screenShake 0.4s}
+@keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-10px,5px)}40%{transform:translate(10px,-5px)}60%{transform:translate(-6px,-3px)}80%{transform:translate(6px,3px)}}
+
+.pu-flash{position:fixed;inset:0;pointer-events:none;z-index:900;opacity:0;animation:puFlash 0.7s ease-out}
+@keyframes puFlash{0%{opacity:0.85}100%{opacity:0}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(16px);animation:fadeIn 0.3s;padding:20px}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-overlay.hidden{display:none}
+.modal-box{
+  background:linear-gradient(135deg,rgba(15,25,45,0.98),rgba(25,15,45,0.98));
+  border:2px solid var(--neon-gold);border-radius:24px;
+  padding:32px 36px;text-align:center;max-width:580px;width:100%;
+  box-shadow:0 0 100px rgba(255,204,0,0.6),inset 0 1px 0 rgba(255,255,255,0.15);
+  animation:modalPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;overflow:hidden;max-height:90vh;overflow-y:auto;
+}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--neon-gold),var(--neon-pink),transparent)}
+@keyframes modalPop{from{transform:scale(0.7);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,0.3);border-radius:4px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-blue),var(--neon-purple));border-radius:4px;box-shadow:0 0 10px var(--neon-blue)}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
+.tab-btn{
+  padding:10px 20px;background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:10px;color:var(--text-dim);font-family:'Orbitron',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.3s;backdrop-filter:blur(10px);
+}
+.tab-btn.active{color:var(--neon-gold);border-color:var(--neon-gold);background:linear-gradient(135deg,rgba(255,204,0,0.2),rgba(255,136,0,0.1));box-shadow:0 0 25px rgba(255,204,0,0.5)}
+.tab-btn:hover{transform:translateY(-3px)}
+
+/* Level grid */
+.level-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:10px;max-width:740px;width:100%;padding:10px;max-height:55vh;overflow-y:auto}
+.level-btn{
+  aspect-ratio:1;background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:12px;color:var(--text);font-family:'Orbitron',sans-serif;
+  font-size:14px;font-weight:900;cursor:pointer;transition:all 0.3s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;padding:4px;backdrop-filter:blur(10px);
+}
+.level-btn.unlocked{border-color:var(--neon-blue);background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(180,41,255,0.1));box-shadow:0 4px 20px rgba(0,212,255,0.25)}
+.level-btn.unlocked:hover{transform:translateY(-4px) scale(1.08);box-shadow:0 12px 35px rgba(0,212,255,0.6);border-color:var(--neon-cyan)}
+.level-btn.completed{border-color:var(--neon-green);background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,255,240,0.1))}
+.level-btn.completed::after{content:'✓';position:absolute;top:4px;right:6px;color:var(--neon-green);font-size:12px;font-weight:900;text-shadow:0 0 8px var(--neon-green)}
+.level-btn.locked{opacity:0.3;cursor:not-allowed;border-color:rgba(120,140,180,0.2)}
+.level-btn.boss{border-color:var(--neon-red);background:linear-gradient(135deg,rgba(255,34,68,0.25),rgba(180,41,255,0.2));animation:bossPulse 1.5s infinite alternate}
+@keyframes bossPulse{from{box-shadow:0 0 15px rgba(255,34,68,0.5)}to{box-shadow:0 0 35px rgba(255,34,68,1)}}
+.level-btn .stars{font-size:8px;margin-top:2px;color:var(--neon-gold);text-shadow:0 0 6px var(--neon-gold)}
+
+/* Settings */
+.toggle-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 20px;background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:12px;margin-bottom:10px;min-width:360px;backdrop-filter:blur(20px);
+}
+.toggle-row .label{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.toggle-switch{width:52px;height:28px;background:rgba(0,0,0,0.6);border-radius:14px;position:relative;cursor:pointer;transition:all 0.3s;border:1.5px solid rgba(120,140,180,0.3)}
+.toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:var(--text-dim);border-radius:50%;transition:all 0.3s}
+.toggle-switch.on{background:linear-gradient(90deg,rgba(0,255,136,0.3),rgba(0,255,240,0.3));border-color:var(--neon-green);box-shadow:0 0 20px rgba(0,255,136,0.5)}
+.toggle-switch.on::after{left:28px;background:var(--neon-green);box-shadow:0 0 15px var(--neon-green)}
+
+/* Achievements */
+.achievement-list{display:flex;flex-direction:column;gap:8px;max-width:540px;width:100%;max-height:55vh;overflow-y:auto;padding:8px}
+.achievement{display:flex;gap:14px;align-items:center;background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;padding:12px 16px;text-align:left;transition:all 0.3s;backdrop-filter:blur(20px)}
+.achievement.unlocked{border-color:var(--neon-gold);background:linear-gradient(135deg,rgba(255,204,0,0.15),rgba(255,136,0,0.08));box-shadow:0 0 25px rgba(255,204,0,0.35)}
+.achievement .ach-ico{font-size:26px;filter:grayscale(1);opacity:0.35;transition:all 0.3s}
+.achievement.unlocked .ach-ico{filter:none;opacity:1;filter:drop-shadow(0 0 12px var(--neon-gold));animation:achPop 0.5s}
+@keyframes achPop{0%{transform:scale(0.5) rotate(-15deg)}100%{transform:scale(1) rotate(0)}}
+.achievement .ach-info{flex:1}
+.achievement .ach-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--text)}
+.achievement .ach-desc{font-size:10px;color:var(--text-dim);margin-top:2px;font-family:'Rajdhani'}
+.achievement.unlocked .ach-title{color:var(--neon-gold);text-shadow:0 0 12px rgba(255,204,0,0.5)}
+
+/* Confetti */
+.confetti{position:fixed;width:10px;height:10px;z-index:1500;pointer-events:none;animation:confettiFall 3s linear forwards}
+@keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+.section-title{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--neon-gold);margin-bottom:14px;text-transform:uppercase;font-weight:900;text-shadow:0 0 16px var(--neon-gold)}
+
+.back-btn{
+  position:absolute;top:20px;left:20px;padding:10px 18px;background:var(--glass);
+  border:1.5px solid var(--glass-border);border-radius:12px;color:#fff;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;
+  cursor:pointer;transition:all 0.3s;text-transform:uppercase;z-index:10;
+  backdrop-filter:blur(20px);display:flex;align-items:center;gap:8px;
+}
+.back-btn:hover{border-color:var(--neon-cyan);background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(180,41,255,0.15));transform:translateX(-3px);box-shadow:0 8px 30px rgba(0,212,255,0.4)}
+
+/* Toast */
+.toast{
+  position:fixed;top:90px;left:50%;transform:translateX(-50%) translateY(-40px);
+  background:linear-gradient(135deg,rgba(15,25,45,0.98),rgba(25,15,45,0.98));
+  border:2px solid var(--neon-cyan);color:#fff;padding:12px 24px;border-radius:12px;
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;
+  z-index:3000;box-shadow:0 12px 50px rgba(0,212,255,0.6);
+  opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;text-transform:uppercase;max-width:90vw;
+}
+/* ============ SHOP ============ */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;max-width:800px;width:100%;padding:10px;max-height:60vh;overflow-y:auto}
+.shop-item{
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:14px;
+  padding:16px;text-align:center;transition:all 0.3s;backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;gap:8px;position:relative;
+}
+.shop-item:hover{transform:translateY(-4px);border-color:var(--neon-cyan);box-shadow:0 12px 35px rgba(0,212,255,0.4)}
+.shop-item.owned{border-color:var(--neon-green);background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,255,240,0.08))}
+.shop-item .item-icon{font-size:44px;filter:drop-shadow(0 0 15px var(--neon-cyan))}
+.shop-item .item-name{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px}
+.shop-item .item-desc{font-size:10px;color:var(--text-dim);font-family:'Rajdhani'}
+.shop-item .item-price{
+  font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;
+  color:var(--neon-gold);text-shadow:0 0 12px var(--neon-gold);
+}
+.shop-item .buy-btn{
+  padding:8px 16px;background:linear-gradient(135deg,rgba(0,212,255,0.3),rgba(180,41,255,0.2));
+  border:1.5px solid var(--neon-cyan);border-radius:10px;color:#fff;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:1.5px;cursor:pointer;transition:all 0.3s;margin-top:4px;
+}
+.shop-item .buy-btn:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(0,212,255,0.6)}
+.shop-item .buy-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+/* Rank badge */
+.rank-badge{
+  display:inline-block;padding:3px 10px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;
+  letter-spacing:1.5px;text-transform:uppercase;
+}
+.rank-bronze{background:linear-gradient(135deg,#cd7f32,#8b5a2b);color:#fff;box-shadow:0 0 12px #cd7f32}
+.rank-silver{background:linear-gradient(135deg,#c0c0c0,#808080);color:#000;box-shadow:0 0 12px #c0c0c0}
+.rank-gold{background:linear-gradient(135deg,#ffd700,#b8860b);color:#000;box-shadow:0 0 12px #ffd700}
+.rank-plat{background:linear-gradient(135deg,#00e5ff,#0088aa);color:#000;box-shadow:0 0 12px #00e5ff}
+.rank-diamond{background:linear-gradient(135deg,#b9f2ff,#5a8fa8);color:#000;box-shadow:0 0 12px #b9f2ff}
+.rank-gm{background:linear-gradient(135deg,#ff3366,#b429ff);color:#fff;box-shadow:0 0 12px #ff3366}
+
+/* Daily quests */
+.quest-list{display:flex;flex-direction:column;gap:10px;max-width:480px;width:100%}
+.quest-item{
+  background:var(--glass);border:1.5px solid var(--glass-border);border-radius:12px;
+  padding:12px 16px;text-align:left;backdrop-filter:blur(20px);
+  display:flex;align-items:center;gap:12px;
+}
+.quest-item.completed{border-color:var(--neon-green);background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,255,240,0.08))}
+.quest-icon{font-size:24px}
+.quest-info{flex:1}
+.quest-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px}
+.quest-progress{font-size:10px;color:var(--text-dim);margin-top:3px;font-family:'Rajdhani'}
+.quest-bar{height:4px;background:rgba(0,0,0,0.5);border-radius:2px;margin-top:6px;overflow:hidden}
+.quest-bar-fill{height:100%;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-green));transition:width 0.5s}
+.quest-reward{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 10px var(--neon-gold)}
+
+/* Leaderboard */
+.lb-list{display:flex;flex-direction:column;gap:6px;max-width:520px;width:100%;max-height:55vh;overflow-y:auto}
+.lb-item{
+  display:flex;align-items:center;gap:12px;padding:10px 16px;
+  background:var(--glass);border:1.5px solid var(--glass-border);
+  border-radius:12px;backdrop-filter:blur(20px);transition:all 0.2s;
+}
+.lb-item:hover{transform:translateX(4px);border-color:var(--neon-cyan)}
+.lb-item.me{border-color:var(--neon-gold);background:linear-gradient(135deg,rgba(255,204,0,0.15),rgba(255,136,0,0.08));box-shadow:0 0 20px rgba(255,204,0,0.3)}
+.lb-rank{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--neon-cyan);min-width:32px;text-align:center}
+.lb-rank.top1{color:var(--neon-gold);text-shadow:0 0 15px var(--neon-gold)}
+.lb-rank.top2{color:#c0c0c0}
+.lb-rank.top3{color:#cd7f32}
+.lb-name{flex:1;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-align:left}
+.lb-score{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 10px var(--neon-gold)}
+
+/* Heatmap */
+.heatmap{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;max-width:420px;margin:14px auto}
+.heat-cell{
+  aspect-ratio:1;background:rgba(0,0,0,0.4);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  color:var(--text-dim);transition:all 0.3s;
+}
+.heat-cell[data-heat="1"]{background:rgba(0,255,136,0.2);color:var(--neon-green)}
+.heat-cell[data-heat="2"]{background:rgba(255,204,0,0.3);color:var(--neon-gold)}
+.heat-cell[data-heat="3"]{background:rgba(255,136,0,0.4);color:var(--neon-orange)}
+.heat-cell[data-heat="4"]{background:rgba(255,34,68,0.5);color:var(--neon-red);box-shadow:0 0 10px var(--neon-red)}
+
+/* Share card */
+.share-card{
+  background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(180,41,255,0.2));
+  border:2px solid var(--neon-cyan);border-radius:18px;padding:22px;
+  margin:16px 0;font-family:'Orbitron',sans-serif;
+  box-shadow:0 0 40px rgba(0,212,255,0.4);
+}
+
+@media(max-width:640px){
+  .stats-bar{flex-wrap:wrap}
+  .hud-val{font-size:14px}
+  .race-track{bottom:280px}
+  .wpm-display{min-width:auto;padding:6px 8px;gap:8px}
+  .menu-btn{padding:14px 20px;font-size:11px}
+  .typing-panel{padding:12px 14px 16px}
+  .live-chart{width:120px;height:60px}
+  .profile-card{min-width:auto;padding:16px 20px;flex-direction:column;text-align:center}
+  .profile-info{text-align:center}
+  .top-bar{position:relative;top:auto;right:auto;margin-bottom:12px;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== MENU ==================== -->
+<div class="screen" id="menuScreen">
+  <div class="top-bar">
+    <div class="top-chip">
+      <svg viewBox="0 0 24 24" fill="#ffcc00"><circle cx="12" cy="12" r="10" opacity="0.3"/><text x="12" y="16" text-anchor="middle" fill="#ffcc00" font-size="12" font-weight="900">$</text></svg>
+      <span class="val" id="menuCoins">0</span>
+    </div>
+    <div class="top-chip">
+      <svg viewBox="0 0 24 24" fill="#00fff0"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 22 12 18l-5.5 4L8 14.5 3 10l6.5-1.5z"/></svg>
+      <span class="val" id="menuLevel">1</span>
+    </div>
+  </div>
+
+  <div class="logo">TYPING RACE</div>
+  <div class="subtitle">⚡ PREMIUM EDITION ⚡</div>
+
+  <div class="profile-card">
+    <div class="profile-avatar" id="profileAvatar">🏎️</div>
+    <div class="profile-info">
+      <div class="profile-name" id="profileName">PLAYER_ONE</div>
+      <div class="profile-rank">
+        <span class="rank-badge rank-bronze" id="profileRank">🥉 BRONZA</span>
+      </div>
+      <div class="profile-xp-bar"><div class="profile-xp-fill" id="profileXPFill" style="width:0%"></div></div>
+      <div class="profile-xp-text" id="profileXPText">0 / 100 XP</div>
+    </div>
+  </div>
+
+  <div class="menu-buttons">
+    <button class="menu-btn primary" onclick="openLevels()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      KAMPANIYA · 100 BOSQICH
+    </button>
+    <button class="menu-btn gold" onclick="openDaily()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13"/></svg>
+      KUNLIK VAZIFALAR
+      <span class="badge" id="questBadge" style="display:none">!</span>
+    </button>
+    <button class="menu-btn" onclick="openShop()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2 14h13l2-10H7"/><circle cx="9" cy="20" r="2"/><circle cx="19" cy="20" r="2"/></svg>
+      DO'KON
+    </button>
+    <button class="menu-btn" onclick="openGarage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l1.5-6h11L19 12M5 12v6h3v-3h8v3h3v-6"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>
+      GARAJ
+    </button>
+    <button class="menu-btn" onclick="openLeaderboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M8 21v-4M16 21v-4M12 17v4M8 21h8"/></svg>
+      LEADERBOARD
+    </button>
+    <button class="menu-btn" onclick="openAchievements()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+      YUTUQLAR
+    </button>
+    <button class="menu-btn" onclick="openStats()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      STATISTIKA
+    </button>
+    <button class="menu-btn" onclick="openSettings()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      SOZLAMALAR
+    </button>
+  </div>
+</div>
+
+<!-- ==================== LEVELS ==================== -->
+<div class="screen hidden" id="levelsScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:6px">KAMPANIYA</div>
+  <div class="subtitle">100 BOSQICH · BOSSLAR HAR 10-DA</div>
+  <div class="stats-bar" style="margin-bottom:14px">
+    <div class="stat-chip"><span>🪙</span><span class="val" id="lvlCoins">0</span></div>
+    <div class="stat-chip"><span>OCHILDI</span><span class="val" id="lvlUnlocked">1</span></div>
+    <div class="stat-chip"><span>TUGATILDI</span><span class="val" id="lvlCompleted">0</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="filterLevels('all',event)">BARCHASI</button>
+    <button class="tab-btn" onclick="filterLevels('completed',event)">TUGATILGAN</button>
+    <button class="tab-btn" onclick="filterLevels('boss',event)">BOSSLAR</button>
+  </div>
+  <div class="level-grid" id="levelGrid"></div>
+</div>
+
+<!-- ==================== DAILY QUESTS ==================== -->
+<div class="screen hidden" id="dailyScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:6px">KUNLIK</div>
+  <div class="subtitle">HAR KUNI YANGI VAZIFALAR</div>
+  <div class="section-title">🔥 KUNLIK VAZIFALAR</div>
+  <div class="quest-list" id="questList"></div>
+  <div class="section-title" style="margin-top:24px">🎁 KUNLIK SOVG'A</div>
+  <div id="dailyGiftContent"></div>
+</div>
+
+<!-- ==================== SHOP ==================== -->
+<div class="screen hidden" id="shopScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:6px">DO'KON</div>
+  <div class="subtitle">TANGALARINGIZNI SARFLANG</div>
+  <div class="stats-bar">
+    <div class="stat-chip"><span>💰</span><span>JAMI:</span><span class="val" id="shopCoins">0</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="filterShop('powerups',event)">POWER-UPS</button>
+    <button class="tab-btn" onclick="filterShop('boosters',event)">BOOSTERLAR</button>
+    <button class="tab-btn" onclick="filterShop('cosmetics',event)">KOSMETIKA</button>
+  </div>
+  <div class="shop-grid" id="shopGrid"></div>
+</div>
+
+<!-- ==================== GARAGE ==================== -->
+<div class="screen hidden" id="garageScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:6px">GARAJ</div>
+  <div class="subtitle">MASHINANGIZNI TANLANG</div>
+  <div class="stats-bar">
+    <div class="stat-chip"><span>💰</span><span class="val" id="garageCoins">0</span></div>
+  </div>
+  <div class="shop-grid" id="garageGrid"></div>
+</div>
+
+<!-- ==================== LEADERBOARD ==================== -->
+<div class="screen hidden" id="lbScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:6px">LEADERBOARD</div>
+  <div class="subtitle">ENG YAXSHI O'YINCHILAR</div>
+  <div class="lb-list" id="lbList"></div>
+</div>
+
+<!-- ==================== ACHIEVEMENTS ==================== -->
+<div class="screen hidden" id="achScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:6px">YUTUQLAR</div>
+  <div class="subtitle">BARCHA ACHIEVEMENTLARNI OCHING</div>
+  <div class="achievement-list" id="achList"></div>
+</div>
+
+<!-- ==================== STATS ==================== -->
+<div class="screen hidden" id="statsScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:16px">STATISTIKA</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchStatsTab('overview',event)">UMUMIY</button>
+    <button class="tab-btn" onclick="switchStatsTab('heatmap',event)">XATOLAR</button>
+    <button class="tab-btn" onclick="switchStatsTab('history',event)">TARIX</button>
+  </div>
+  <div id="statsContent"></div>
+</div>
+
+<!-- ==================== SETTINGS ==================== -->
+<div class="screen hidden" id="settingsScreen">
+  <button class="back-btn" onclick="closeAll()">← ORQAGA</button>
+  <div class="logo" style="font-size:38px;margin-bottom:18px">SOZLAMALAR</div>
+  <div class="toggle-row">
+    <span class="label">🔊 Ovoz</span>
+    <div class="toggle-switch on" id="tglSound" onclick="toggleSetting('sound')"></div>
+  </div>
+  <div class="toggle-row">
+    <span class="label">🎵 Fon musiqa</span>
+    <div class="toggle-switch" id="tglMusic" onclick="toggleSetting('music')"></div>
+  </div>
+  <div class="toggle-row">
+    <span class="label">✨ 4D Effektlar</span>
+    <div class="toggle-switch on" id="tglFx" onclick="toggleSetting('fx')"></div>
+  </div>
+  <div class="toggle-row">
+    <span class="label">📳 Ekran silkinishi</span>
+    <div class="toggle-switch on" id="tglShake" onclick="toggleSetting('shake')"></div>
+  </div>
+  <div class="toggle-row">
+    <span class="label">🌧️ Ob-havo</span>
+    <div class="toggle-switch on" id="tglWeather" onclick="toggleSetting('weather')"></div>
+  </div>
+  <div class="toggle-row">
+    <span class="label">📊 Live grafik</span>
+    <div class="toggle-switch on" id="tglChart" onclick="toggleSetting('chart')"></div>
+  </div>
+  <div class="toggle-row">
+    <span class="label">🎯 Kritik harflar</span>
+    <div class="toggle-switch on" id="tglCrit" onclick="toggleSetting('crit')"></div>
+  </div>
+  <div class="toggle-row" style="margin-top:18px;border-color:var(--neon-red)">
+    <span class="label" style="color:var(--neon-red)">🗑️ Progressni o'chirish</span>
+    <button class="menu-btn" style="padding:8px 16px;font-size:9px;min-width:auto" onclick="resetProgress()">O'CHIRISH</button>
+  </div>
+</div>
+
+<!-- ==================== GAME ==================== -->
+<div id="game" style="display:none">
+  <div class="road-perspective"><div class="road-lines"></div></div>
+  <div class="road-edge-l"></div>
+  <div class="road-edge-r"></div>
+  <div class="weather" id="weatherLayer"></div>
+  <div class="stars" id="stars"></div>
+
+  <div class="hud-top">
+    <div class="hud-panel"><div class="hud-lbl">POYGA</div><div class="hud-val" id="raceStatus">0%</div></div>
+    <div class="hud-panel" style="text-align:center"><div class="hud-lbl">BOSQICH</div><div class="hud-val small" id="levelDisplay">1</div></div>
+    <div class="hud-panel" style="text-align:center"><div class="hud-lbl">VAQT</div><div class="hud-val" id="timeDisplay">00:00</div></div>
+    <div class="hud-panel" style="text-align:center"><div class="hud-lbl">COMBO</div><div class="hud-val small" id="comboDisplay">x0</div></div>
+    <div class="hud-panel" style="text-align:right"><div class="hud-lbl">O'RIN</div><div class="hud-val" id="rankDisplay">1 / 4</div></div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="race-track" id="raceTrack">
+    <div class="finish-line"><div class="finish-flag">🏁</div></div>
+  </div>
+
+  <div class="live-chart" id="liveChart" style="display:none">
+    <div class="live-chart-title">WPM</div>
+    <svg id="chartSvg" viewBox="0 0 180 80" preserveAspectRatio="none"></svg>
+  </div>
+
+  <div class="countdown hidden" id="countdown">
+    <div class="countdown-num" id="countdownNum">3</div>
+  </div>
+
+  <div class="streak-wrong" id="streakWrong">XATO!</div>
+  <div class="streak-correct" id="streakCorrect">COMBO!</div>
+
+  <div class="typing-panel">
+    <div class="powerups-row" id="powerupsRow">
+      <div class="powerup" data-pu="turbo" onclick="activatePowerup('turbo')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+        <span>TURBO</span><span class="pu-count" id="puTurbo">0</span>
+      </div>
+      <div class="powerup" data-pu="shield" onclick="activatePowerup('shield')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>SHIELD</span><span class="pu-count" id="puShield">0</span>
+      </div>
+      <div class="powerup" data-pu="freeze" onclick="activatePowerup('freeze')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg>
+        <span>FREEZE</span><span class="pu-count" id="puFreeze">0</span>
+      </div>
+      <div class="powerup" data-pu="auto" onclick="activatePowerup('auto')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <span>AUTO</span><span class="pu-count" id="puAuto">0</span>
+      </div>
+      <div class="powerup" data-pu="hint" onclick="activatePowerup('hint')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c0 .8.5 1.5 1 2h6c.5-.5 1-1.2 1-2A7 7 0 0 0 12 2z"/></svg>
+        <span>HINT</span><span class="pu-count" id="puHint">0</span>
+      </div>
+    </div>
+    <div class="text-to-type" id="textToType"></div>
+    <div class="input-row">
+      <input type="text" class="typing-input" id="typingInput" placeholder="Bu yerga yozing..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div class="wpm-display">
+        <div class="wpm-item"><div class="wpm-lbl">WPM</div><div class="wpm-val" id="wpmDisplay">0</div></div>
+        <div class="wpm-item"><div class="wpm-lbl">ANIQLIK</div><div class="wpm-val" id="accDisplay">100%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAUSE ==================== -->
+<div class="screen hidden" id="pauseScreen">
+  <div class="logo" style="font-size:52px;letter-spacing:12px">PAUZA</div>
+  <div class="menu-buttons" style="margin-top:22px">
+    <button class="menu-btn primary" onclick="resumeGame()">▶ DAVOM ETISH</button>
+    <button class="menu-btn" onclick="restartGame()">🔄 QAYTADAN</button>
+    <button class="menu-btn" onclick="exitToMenu()">🏠 BOSH MENYU</button>
+  </div>
+</div>
+
+<!-- ==================== RESULT ==================== -->
+<div class="screen hidden" id="resultScreen">
+  <div class="trophy" id="resultTrophy">🏆</div>
+  <div class="logo" id="resultTitle" style="font-size:44px">G'ALABA!</div>
+  <div class="subtitle" id="resultSubtitle">Birinchi bo'lib finishga yetdingiz!</div>
+
+  <div class="result-stats">
+    <div class="stat-box"><div class="stat-num" id="finalWPM">0</div><div class="stat-label">WPM</div></div>
+    <div class="stat-box"><div class="stat-num" id="finalAccuracy">0%</div><div class="stat-label">ANIQLIK</div></div>
+    <div class="stat-box"><div class="stat-num" id="finalTime">00:00</div><div class="stat-label">VAQT</div></div>
+    <div class="stat-box"><div class="stat-num" id="finalRank">1</div><div class="stat-label">O'RIN</div></div>
+  </div>
+
+  <div class="stats-bar" style="margin-top:-8px">
+    <div class="stat-chip"><span>🪙</span><span class="val" id="finalCoins">0</span></div>
+    <div class="stat-chip"><span>⭐</span><span class="val" id="finalXP">0</span></div>
+    <div class="stat-chip"><span>🌟</span><span class="val" id="finalStars">0/3</span></div>
+    <div class="stat-chip"><span>🔥</span><span class="val" id="finalCombo">0</span></div>
+  </div>
+
+  <div class="menu-buttons" style="margin-top:16px">
+    <button class="menu-btn primary" id="nextLevelBtn" onclick="nextLevel()">▶ KEYINGI BOSQICH</button>
+    <button class="menu-btn" onclick="shareResult()">📤 ULASHISH</button>
+    <button class="menu-btn" onclick="restartGame()">🔄 QAYTADAN</button>
+    <button class="menu-btn" onclick="exitToMenu()">🏠 BOSH MENYU</button>
+  </div>
+</div>
+
+<!-- ==================== LEVEL UP MODAL ==================== -->
+<div class="modal-overlay hidden" id="levelUpModal">
+  <div class="modal-box">
+    <div style="font-size:70px;margin-bottom:12px;animation:trophyBounce 1s infinite alternate;filter:drop-shadow(0 0 30px var(--neon-gold))">⭐</div>
+    <div class="logo" style="font-size:34px;margin-bottom:12px">LEVEL UP!</div>
+    <div style="font-size:12px;color:var(--text-dim);letter-spacing:3px;margin-bottom:18px;font-family:'Orbitron'">SIZ YANGI DARAJAGA KO'TARILDINGIZ</div>
+    <div style="font-family:'Orbitron';font-size:52px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 40px var(--neon-gold);margin-bottom:20px" id="newLevelNum">2</div>
+    <button class="menu-btn primary" style="min-width:200px;margin:0 auto" onclick="closeLevelUp()">DAVOM ETISH</button>
+  </div>
+</div>
+
+<!-- ==================== ACHIEVEMENT MODAL ==================== -->
+<div class="modal-overlay hidden" id="achModal">
+  <div class="modal-box" style="border-color:var(--neon-gold)">
+    <div style="font-size:70px;margin-bottom:12px;animation:trophyBounce 1s infinite alternate" id="achModalIcon">🏆</div>
+    <div class="logo" style="font-size:28px;margin-bottom:8px">YUTUQ!</div>
+    <div style="font-family:'Orbitron';font-size:16px;font-weight:700;color:var(--neon-gold);text-shadow:0 0 20px var(--neon-gold);margin:14px 0" id="achModalTitle">YANGI YUTUQ</div>
+    <div style="font-size:13px;color:var(--text-dim);margin-bottom:20px" id="achModalDesc">Tavsif</div>
+    <button class="menu-btn primary" style="min-width:200px;margin:0 auto" onclick="document.getElementById('achModal').classList.add('hidden')">ZO'R!</button>
+  </div>
+</div>
+
+<!-- ==================== DAILY MODAL ==================== -->
+<div class="modal-overlay hidden" id="dailyModal">
+  <div class="modal-box">
+    <div style="font-size:70px;margin-bottom:12px">🎁</div>
+    <div class="logo" style="font-size:30px;margin-bottom:16px">KUNLIK SOVG'A</div>
+    <div id="dailyContent" style="margin-bottom:22px"></div>
+    <button class="menu-btn primary" style="min-width:200px;margin:0 auto" id="dailyBtn" onclick="claimDaily()">OLISH</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SAVE SYSTEM
+   ============================================================ */
+const SAVE_KEY = 'typing_race_pro_v1';
+const defaultSave = {
+  coins: 100, level: 1, xp: 0, xpNeeded: 100,
+  currentStage: 1, unlockedStages: 1,
+  completedStages: {}, stageStars: {}, achievements: {},
+  settings: { sound: true, music: false, fx: true, shake: true, weather: true, chart: true, crit: true },
+  stats: { totalGames:0, totalWins:0, totalChars:0, totalWrong:0,
+    bestWPM:0, bestCombo:0, totalTime:0, totalCoins:0, perfectRuns:0,
+    wpmHistory: [], charErrors: {}, stageHistory: [] },
+  inventory: { turbo: 3, shield: 3, freeze: 2, auto: 2, hint: 3 },
+  ownedCars: ['default'], currentCar: 'default',
+  ownedCosmetics: [],
+  lastDaily: 0, dailyStreak: 0, lastQuestDate: 0,
+  dailyQuests: [], questsCompleted: 0,
+  playerName: 'PLAYER_ONE',
+  leaderboard: []
+};
+let save = JSON.parse(JSON.stringify(defaultSave));
+
+function loadSave(){
+  try {
+    const s = localStorage.getItem(SAVE_KEY);
+    if(s){
+      const parsed = JSON.parse(s);
+      save = Object.assign(JSON.parse(JSON.stringify(defaultSave)), parsed);
+    }
+    save.settings = Object.assign({...defaultSave.settings}, save.settings || {});
+    save.stats = Object.assign({...defaultSave.stats}, save.stats || {});
+    save.inventory = Object.assign({...defaultSave.inventory}, save.inventory || {});
+  } catch(e){ console.warn(e); }
+  updateMenuStats();
+  renderQuests();
+}
+function saveGame(){
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch(e){}
+  updateMenuStats();
+}
+function resetProgress(){
+  if(confirm("Barcha progress o'chiriladi. Ishonchingiz komilmi?")){
+    localStorage.removeItem(SAVE_KEY);
+    save = JSON.parse(JSON.stringify(defaultSave));
+    saveGame(); alert('Progress o\'chirildi!'); closeAll();
+  }
+}
+function getRankInfo(){
+  const lvl = save.level;
+  if(lvl >= 50) return { name:'GRANDMASTER', cls:'rank-gm', icon:'👑' };
+  if(lvl >= 35) return { name:'OLMOS', cls:'rank-diamond', icon:'💎' };
+  if(lvl >= 20) return { name:'PLATINA', cls:'rank-plat', icon:'🔷' };
+  if(lvl >= 10) return { name:'OLTIN', cls:'rank-gold', icon:'🥇' };
+  if(lvl >= 5)  return { name:'KUMUSH', cls:'rank-silver', icon:'🥈' };
+  return { name:'BRONZA', cls:'rank-bronze', icon:'🥉' };
+}
+function updateMenuStats(){
+  const el = (id) => document.getElementById(id);
+  if(el('menuCoins')) el('menuCoins').textContent = save.coins;
+  if(el('menuLevel')) el('menuLevel').textContent = save.level;
+  if(el('profileName')) el('profileName').textContent = save.playerName;
+  if(el('profileAvatar')) el('profileAvatar').textContent = CAR_DATA[save.currentCar]?.icon || '🏎️';
+  if(el('profileXPFill')) el('profileXPFill').style.width = Math.min(100, (save.xp / save.xpNeeded) * 100) + '%';
+  if(el('profileXPText')) el('profileXPText').textContent = save.xp + ' / ' + save.xpNeeded + ' XP';
+  const rank = getRankInfo();
+  if(el('profileRank')){
+    el('profileRank').className = 'rank-badge ' + rank.cls;
+    el('profileRank').textContent = rank.icon + ' ' + rank.name;
+  }
+  const pending = save.dailyQuests.filter(q => !q.claimed).length;
+  if(el('questBadge')) el('questBadge').style.display = pending > 0 ? 'flex' : 'none';
+}
+
+/* ============================================================
+   CAR DATA
+   ============================================================ */
+const CAR_DATA = {
+  default: { name:'STANDART', icon:'🏎️', color:'#00a8ff', accent:'#66d4ff', price:0, speed:1.0, desc:'Asosiy mashina' },
+  retro:   { name:'RETRO 80s', icon:'🚗', color:'#ff0080', accent:'#ff88cc', price:500, speed:1.0, desc:'Klassik uslub' },
+  formula: { name:'FORMULA X', icon:'🏁', color:'#ff2244', accent:'#ffcc00', price:1500, speed:1.05, desc:'F1 tezlik' },
+  truck:   { name:'MEGA TRUCK', icon:'🚚', color:'#ffcc00', accent:'#ffee88', price:2000, speed:1.0, desc:'Kuchli va ishonchli' },
+  cyber:   { name:'CYBER PUNK', icon:'⚡', color:'#b429ff', accent:'#dd88ff', price:3000, speed:1.08, desc:'Kelajak mashinasi' },
+  phantom: { name:'PHANTOM', icon:'👻', color:'#00fff0', accent:'#88ffff', price:5000, speed:1.1, desc:'Ko\'rinmas tezlik' },
+  dragon:  { name:'DRAGON', icon:'🐉', color:'#ff3300', accent:'#ffcc00', price:8000, speed:1.15, desc:'Ajdaho kuchi' },
+  god:     { name:'GOD MODE', icon:'👑', color:'#ffcc00', accent:'#fff', price:15000, speed:1.25, desc:'Eng yuqori daraja' }
+};
+
+/* ============================================================
+   ACHIEVEMENTS
+   ============================================================ */
+const ACHIEVEMENTS = [
+  { id:'first_win', ico:'🥇', title:'BIRINCHI G\'ALABA', desc:'Birinchi poygada g\'alaba qozon' },
+  { id:'combo_30',  ico:'🔥', title:'COMBO MASTER', desc:'30x combo to\'plash' },
+  { id:'combo_50',  ico:'💥', title:'COMBO LEGENDA', desc:'50x combo to\'plash' },
+  { id:'wpm_50',    ico:'⚡', title:'TEZ YOZUVCHI', desc:'50 WPM ga yetish' },
+  { id:'wpm_80',    ico:'🚀', title:'RAKETA', desc:'80 WPM ga yetish' },
+  { id:'wpm_100',   ico:'💫', title:'CHAQMOQ', desc:'100 WPM ga yetish' },
+  { id:'wpm_150',   ico:'🌟', title:'SUPERSTAR', desc:'150 WPM ga yetish' },
+  { id:'perfect',   ico:'💎', title:'MUKAMMAL', desc:'Xatosiz poygani tugatish' },
+  { id:'stage_10',  ico:'🥉', title:'BRONZA', desc:'10-bosqichni tugatish' },
+  { id:'stage_25',  ico:'🎖️', title:'JANGCHI', desc:'25-bosqichni tugatish' },
+  { id:'stage_50',  ico:'🥈', title:'KUMUSH', desc:'50-bosqichni tugatish' },
+  { id:'stage_75',  ico:'🏅', title:'CHEMPION', desc:'75-bosqichni tugatish' },
+  { id:'stage_100', ico:'🥇', title:'OLTIN', desc:'100-bosqichni tugatish' },
+  { id:'rich',      ico:'💰', title:'BOY', desc:'1000 tanga to\'plash' },
+  { id:'very_rich', ico:'💎', title:'MILLIONER', desc:'5000 tanga to\'plash' },
+  { id:'boss_5',    ico:'👹', title:'BOSS OVCHI', desc:'5 ta bossni yengish' },
+  { id:'boss_10',   ico:'🐲', title:'AJDAHO', desc:'10 ta bossni yengish' },
+  { id:'level_10',  ico:'⭐', title:'FAXRIY', desc:'10-darajaga chiqish' },
+  { id:'level_25',  ico:'🌟', title:'USTOZ', desc:'25-darajaga chiqish' },
+  { id:'level_50',  ico:'👑', title:'GRANDMASTER', desc:'50-darajaga chiqish' },
+  { id:'collector', ico:'🛒', title:'KOLLEKTOR', desc:'3 ta mashina sotib olish' },
+  { id:'speed_demon', ico:'😈', title:'SPEED DEMON', desc:'20 bosqichni 60 sekundda tugatish' },
+  { id:'accuracy_king', ico:'🎯', title:'ANIQLIK QIROLI', desc:'20 marta 100% aniqlik' },
+  { id:'daily_7', ico:'📅', title:'HAFTALIK', desc:'7 kunlik streak' },
+  { id:'daily_30', ico:'🗓️', title:'OYLIK', desc:'30 kunlik streak' }
+];
+
+/* ============================================================
+   SHOP ITEMS
+   ============================================================ */
+const SHOP_ITEMS = {
+  powerups: [
+    { id:'turbo',  icon:'⚡', name:'TURBO x5', price:200, desc:'5 soniya tezlik', qty:5 },
+    { id:'shield', icon:'🛡️', name:'SHIELD x5', price:250, desc:'Xatoni kechiradi', qty:5 },
+    { id:'freeze', icon:'❄️', name:'FREEZE x3', price:300, desc:'Raqiblarni muzlatadi', qty:3 },
+    { id:'auto',   icon:'🎯', name:'AUTO-CORRECT x3', price:350, desc:'10 harf avtomatik', qty:3 },
+    { id:'hint',   icon:'💡', name:'HINT x5', price:150, desc:'Keyingi harfni ko\'rsatadi', qty:5 }
+  ],
+  boosters: [
+    { id:'xp2x', icon:'⭐', name:'XP BOOSTER', price:500, desc:'2x XP keyingi o\'yinda' },
+    { id:'coin2x', icon:'💰', name:'COIN BOOSTER', price:500, desc:'2x tangalar keyingi o\'yinda' },
+    { id:'revive', icon:'💊', name:'REVIVE', price:800, desc:'Mag\'lubiyatda qayta urinish' }
+  ],
+  cosmetics: [
+    { id:'neon_blue', icon:'💙', name:'NEON BLUE', price:400, desc:'Ko\'k neon effekt' },
+    { id:'neon_pink', icon:'💗', name:'NEON PINK', price:400, desc:'Pushti neon effekt' },
+    { id:'neon_gold', icon:'💛', name:'NEON GOLD', price:600, desc:'Oltin neon effekt' }
+  ]
+};
+
+/* ============================================================
+   DAILY QUESTS
+   ============================================================ */
+const QUEST_TEMPLATES = [
+  { id:'play_3', icon:'🎮', title:'3 ta o\'yin o\'ynang', target:3, reward:100, track:'games' },
+  { id:'win_2', icon:'🏆', title:'2 marta g\'alaba qozoning', target:2, reward:150, track:'wins' },
+  { id:'wpm_50', icon:'⚡', title:'50 WPM ga yeting', target:1, reward:120, track:'wpm50' },
+  { id:'combo_20', icon:'🔥', title:'20x combo to\'plang', target:1, reward:100, track:'combo20' },
+  { id:'perfect_1', icon:'💎', title:'Xatosiz poyga tugating', target:1, reward:200, track:'perfect' },
+  { id:'boss_1', icon:'👹', title:'1 ta bossni yenging', target:1, reward:180, track:'boss' },
+  { id:'coins_200', icon:'💰', title:'200 tanga to\'plang', target:200, reward:50, track:'coins' },
+  { id:'chars_500', icon:'⌨️', title:'500 harf yozing', target:500, reward:100, track:'chars' }
+];
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, color='accent'){
+  const colors = { accent:'#00d4ff', gold:'#ffcc00', green:'#00ff88', red:'#ff2244', purple:'#b429ff' };
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  t.style.borderColor = colors[color]||colors.accent;
+  t.style.boxShadow = `0 12px 50px ${colors[color]||colors.accent}88`;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => { t.style.transform = 'translateX(-50%) translateY(0)'; t.style.opacity = '1'; });
+  setTimeout(() => {
+    t.style.transform = 'translateX(-50%) translateY(-40px)';
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 400);
+  }, 2200);
+}
+
+/* ============================================================
+   AUDIO ENGINE
+   ============================================================ */
+let audioCtx = null;
+let musicOsc = null;
+function initAudio(){
+  if(!audioCtx){
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+  }
+}
+function playSound(type){
+  if(!save.settings.sound || !audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    let freq=440, dur=0.08, wave='sine', vol=0.08;
+    switch(type){
+      case 'key': freq=800; dur=0.03; wave='square'; vol=0.03; break;
+      case 'correct': freq=1200; dur=0.05; wave='sine'; vol=0.06; break;
+      case 'wrong': freq=150; dur=0.15; wave='sawtooth'; vol=0.1; break;
+      case 'combo': freq=1600; dur=0.12; wave='triangle'; vol=0.1; break;
+      case 'coin': freq=1400; dur=0.1; wave='square'; vol=0.06; break;
+      case 'click': freq=600; dur=0.06; wave='triangle'; vol=0.07; break;
+      case 'powerup': freq=1000; dur=0.3; wave='sine'; vol=0.1; break;
+      case 'levelup': freq=800; dur=0.5; wave='triangle'; vol=0.12; break;
+      case 'win': freq=900; dur=0.6; wave='sine'; vol=0.15; break;
+      case 'lose': freq=200; dur=0.5; wave='sawtooth'; vol=0.1; break;
+      case 'achievement': freq=1500; dur=0.4; wave='triangle'; vol=0.12; break;
+      case 'purchase': freq=1200; dur=0.2; wave='sine'; vol=0.1; break;
+    }
+    osc.frequency.setValueAtTime(freq, now);
+    osc.type = wave;
+    if(type==='win'||type==='levelup'||type==='achievement') osc.frequency.exponentialRampToValueAtTime(freq*2, now+dur);
+    if(type==='lose') osc.frequency.exponentialRampToValueAtTime(freq*0.5, now+dur);
+    gain.gain.setValueAtTime(vol, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now+dur);
+    osc.start(now); osc.stop(now+dur);
+  } catch(e){}
+}
+document.addEventListener('click', initAudio, { once: true });
+document.addEventListener('keydown', initAudio, { once: true });
+
+/* ============================================================
+   CAR SVG
+   ============================================================ */
+function carSVG(color, accent, isBoss=false, carType='default'){
+  const id = color.replace('#','') + Math.random().toString(36).substr(2,4);
+  let bodyPath = 'M8 12 Q4 15 3 25 Q3 35 8 38 L12 40 L58 40 L62 38 Q67 35 67 25 Q67 15 62 12 L58 10 L12 10 Z';
+  if(carType === 'formula') bodyPath = 'M6 15 Q4 20 4 25 Q4 30 6 35 L10 39 L60 39 L64 35 Q66 30 66 25 Q66 20 64 15 L60 11 L10 11 Z';
+  if(carType === 'truck') bodyPath = 'M6 10 Q4 14 4 25 Q4 36 6 40 L10 42 L60 42 L64 40 Q66 36 66 25 Q66 14 64 10 L60 8 L10 8 Z';
+  return `
+  <svg viewBox="0 0 70 50" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bg-${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${accent}"/>
+        <stop offset="50%" stop-color="${color}"/>
+        <stop offset="100%" stop-color="${shade(color,-40)}"/>
+      </linearGradient>
+      <linearGradient id="gg-${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="rgba(180,230,255,0.9)"/>
+        <stop offset="100%" stop-color="rgba(30,80,140,0.7)"/>
+      </linearGradient>
+      <radialGradient id="lg-${id}">
+        <stop offset="0%" stop-color="#fff9c4"/>
+        <stop offset="100%" stop-color="rgba(255,240,150,0)"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="35" cy="46" rx="26" ry="3" fill="rgba(0,0,0,0.5)"/>
+    <rect x="8" y="6" width="9" height="5" rx="2" fill="#0a0a0a"/>
+    <rect x="8" y="39" width="9" height="5" rx="2" fill="#0a0a0a"/>
+    <rect x="53" y="6" width="9" height="5" rx="2" fill="#0a0a0a"/>
+    <rect x="53" y="39" width="9" height="5" rx="2" fill="#0a0a0a"/>
+    <path d="${bodyPath}" fill="url(#bg-${id})" stroke="${accent}" stroke-width="1.2"/>
+    <path d="M10 18 Q35 15 60 18" stroke="${shade(color,-30)}" stroke-width="0.8" fill="none" opacity="0.6"/>
+    <path d="M10 32 Q35 35 60 32" stroke="${shade(color,-30)}" stroke-width="0.8" fill="none" opacity="0.6"/>
+    <path d="M20 17 Q35 12 50 17 L48 24 L22 24 Z" fill="url(#gg-${id})" stroke="rgba(255,255,255,0.5)" stroke-width="0.7"/>
+    <path d="M22 27 L48 27 L50 34 Q35 38 20 34 Z" fill="url(#gg-${id})" stroke="rgba(255,255,255,0.4)" stroke-width="0.6" opacity="0.85"/>
+    <rect x="24" y="24" width="22" height="3" rx="1" fill="${shade(color,-50)}" opacity="0.7"/>
+    <path d="M35 13 L35 38" stroke="${accent}" stroke-width="1.5" opacity="0.9"/>
+    <ellipse cx="65" cy="17" rx="3" ry="2.5" fill="#fff9c4" opacity="0.95"/>
+    <ellipse cx="65" cy="33" rx="3" ry="2.5" fill="#fff9c4" opacity="0.95"/>
+    <ellipse cx="65" cy="17" rx="6" ry="4" fill="url(#lg-${id})" opacity="0.6"/>
+    <ellipse cx="65" cy="33" rx="6" ry="4" fill="url(#lg-${id})" opacity="0.6"/>
+    <rect x="3" y="15" width="2" height="4" rx="1" fill="#ff2244"/>
+    <rect x="3" y="31" width="2" height="4" rx="1" fill="#ff2244"/>
+    <rect x="6" y="14" width="4" height="22" rx="1.5" fill="${shade(color,-60)}" opacity="0.9"/>
+    ${isBoss?`<path d="M28 6 L30 3 L33 5 L35 2 L37 5 L40 3 L42 6 Z" fill="#ffcc00" stroke="#ff6600" stroke-width="0.5"/>`:''}
+  </svg>`;
+}
+function shade(hex, percent){
+  const num = parseInt(hex.replace('#',''),16);
+  let r=(num>>16)+percent, g=((num>>8)&0x00FF)+percent, b=(num&0x0000FF)+percent;
+  r=Math.max(0,Math.min(255,r)); g=Math.max(0,Math.min(255,g)); b=Math.max(0,Math.min(255,b));
+  return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+}
+
+/* ============================================================
+   TEXTS
+   ============================================================ */
+const BASE_TEXTS = {
+  easy: ["tez yoz","yaxshi kun","kitob o'qi","maktabga bor","olma yedi","suv ichdi","katta uy","yashil daraxt","quyosh chiqdi","yulduzlar bor","osmon ko'k","yer yashil","olov issiq","shamol esadi","yomg'ir yog'adi","salom dunyo","yaxshi o'yin","tez mashina","men tez yozaman","bu oson matn","kitob o'qish yaxshi","bugun havo issiq","ertaga dam olaman","yaxshi ish qildim","yozgi ta'til keldi","chiroyli gul ochildi","baland tog' ko'rindi"],
+  medium: ["Men har kuni maktabga boraman","Yaxshi kitob o'qish juda foydali","Bugun ob-havo juda yaxshi edi","Klaviatura tez yozishni o'rgan","Yozgi ta'tilda dam olaman","Daraxtlar yashil barg chiqardi","Bolalar bog'da o'ynashmoqda","Oshxona juda toza bo'lishi kerak","Onam mazali taom tayyorladi","Poyezd tez harakatlanmoqda","Tez yozsang g'olib bo'lasan","Har bir harf muhim ahamiyatga ega","Sekin yozsang orqada qolasan","Xato qilmaslikka harakat qil","Kompyuter klaviaturasi juda qulay"],
+  hard: ["Kompyuter klaviaturasida tez yozish mahorat talab qiladi","Har bir to'g'ri harf sizni g'alabaga yaqinlashtiradi","Raqiblaringiz sizdan oldin yozishga harakat qilmoqda","O'zbekistonning tabiati juda go'zal va boy","Zamonaviy texnologiyalar hayotimizni osonlashtirmoqda","Klaviatura yozish tezligini oshirish uchun mashq qiling","Poyga davomida diqqatni jamlash juda muhim","Xato qilishdan qo'rqmang balki davom eting"],
+  insane: ["Dasturlash tillarini o'rganish uchun klaviaturada tez yozish juda muhim ahamiyatga ega","JavaScript Python C++ kabi tillar yordamida murakkab loyihalar yaratish mumkin","Zamonaviy dasturchi bir daqiqada yuz so'zdan ortiq yozishi kerak bo'ladi","Algoritmlar va ma'lumotlar tuzilmasi haqida chuqur bilim talab qilinadi","Sun'iy intellekt va mashinani o'rganish bugungi kunda eng istiqbolli sohalar"]
+};
+function getDifficultyForStage(stage){
+  if(stage<=10) return 'easy';
+  if(stage<=30) return 'medium';
+  if(stage<=60) return 'hard';
+  return 'insane';
+}
+function getStageConfig(stage){
+  const diff = getDifficultyForStage(stage);
+  const isBoss = stage % 10 === 0;
+  const enemyCount = Math.min(6, 3 + Math.floor(stage/15)) + (isBoss?1:0);
+  const baseSpeed = 1.6 + stage*0.045;
+  const textLength = 15 + Math.floor(stage*0.6);
+  return { diff, isBoss, enemyCount, enemySpeed: baseSpeed, textLength };
+}
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+const G = {
+  state:'menu', currentStage:1, config:null,
+  playerProgress:0, enemies:[], currentText:'', chars:[],
+  startTime:0, correctChars:0, totalChars:0, wrongChars:0,
+  combo:0, maxCombo:0, raceTime:0, timerInterval:null, raf:null,
+  lastLoopTime:0, raceFinished:false, lockedInput:false,
+  lastValLen:0, _lastCombo:0,
+  powerupsActive:{ turbo:0, shield:0, freeze:0, auto:0, hint:0 },
+  shieldActive:false, autoRemaining:0,
+  earnedCoins:0, earnedXP:0, perfect:true,
+  wpmSamples:[], chartTimer:0, lastWPM:0
+};
+const gameEl = document.getElementById('game');
+const trackEl = document.getElementById('raceTrack');
+const inputEl = document.getElementById('typingInput');
+const textEl = document.getElementById('textToType');
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function hideAllScreens(){
+  ['menuScreen','levelsScreen','dailyScreen','shopScreen','garageScreen',
+   'lbScreen','achScreen','statsScreen','settingsScreen','pauseScreen','resultScreen'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.add('hidden');
+  });
+}
+function closeAll(){
+  hideAllScreens();
+  gameEl.style.display = 'none';
+  document.getElementById('menuScreen').classList.remove('hidden');
+  G.state = 'menu';
+  if(G.raf) cancelAnimationFrame(G.raf);
+  clearInterval(G.timerInterval);
+  playSound('click');
+  renderQuests();
+}
+function openLevels(){ hideAllScreens(); document.getElementById('levelsScreen').classList.remove('hidden'); renderLevels(); playSound('click'); }
+function openDaily(){ hideAllScreens(); document.getElementById('dailyScreen').classList.remove('hidden'); renderQuests(); playSound('click'); }
+function openShop(){ hideAllScreens(); document.getElementById('shopScreen').classList.remove('hidden'); renderShop('powerups'); playSound('click'); }
+function openGarage(){ hideAllScreens(); document.getElementById('garageScreen').classList.remove('hidden'); renderGarage(); playSound('click'); }
+function openLeaderboard(){ hideAllScreens(); document.getElementById('lbScreen').classList.remove('hidden'); renderLeaderboard(); playSound('click'); }
+function openAchievements(){ hideAllScreens(); document.getElementById('achScreen').classList.remove('hidden'); renderAchievements(); playSound('click'); }
+function openStats(){ hideAllScreens(); document.getElementById('statsScreen').classList.remove('hidden'); renderStats('overview'); playSound('click'); }
+function openSettings(){
+  hideAllScreens();
+  document.getElementById('settingsScreen').classList.remove('hidden');
+  ['sound','music','fx','shake','weather','chart','crit'].forEach(k => {
+    const el = document.getElementById('tgl'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(el) el.classList.toggle('on', save.settings[k]);
+  });
+  playSound('click');
+}
+function toggleSetting(key){
+  save.settings[key] = !save.settings[key];
+  const el = document.getElementById('tgl'+key.charAt(0).toUpperCase()+key.slice(1));
+  if(el) el.classList.toggle('on', save.settings[key]);
+  saveGame(); playSound('click');
+}
+
+/* ============================================================
+   LEVELS RENDER
+   ============================================================ */
+let levelFilter = 'all';
+function filterLevels(f, e){
+  levelFilter = f;
+  document.querySelectorAll('#levelsScreen .tab-btn').forEach(b => b.classList.remove('active'));
+  if(e) e.target.classList.add('active');
+  renderLevels();
+}
+function renderLevels(){
+  const el = (id) => document.getElementById(id);
+  el('lvlCoins').textContent = save.coins;
+  el('lvlUnlocked').textContent = save.unlockedStages;
+  el('lvlCompleted').textContent = Object.keys(save.completedStages).length;
+  const grid = el('levelGrid');
+  let html = '';
+  for(let i=1; i<=100; i++){
+    const unlocked = i <= save.unlockedStages;
+    const completed = !!save.completedStages[i];
+    const isBoss = i % 10 === 0;
+    if(levelFilter === 'completed' && !completed) continue;
+    if(levelFilter === 'boss' && !isBoss) continue;
+    const stars = save.stageStars[i] || 0;
+    const starStr = '★'.repeat(stars) + '☆'.repeat(3-stars);
+    html += `<button class="level-btn ${unlocked?'unlocked':'locked'} ${completed?'completed':''} ${isBoss?'boss':''}"
+      ${unlocked ? `onclick="startStage(${i})"` : ''}>
+      <div>${isBoss?'👹':''}${i}</div>
+      <div class="stars">${starStr}</div>
+    </button>`;
+  }
+  grid.innerHTML = html || '<div style="padding:30px;color:var(--text-dim);font-family:Orbitron">BO\'SH</div>';
+}
+
+/* ============================================================
+   DAILY QUESTS
+   ============================================================ */
+function renderQuests(){
+  const today = new Date().toDateString();
+  const lastQuest = save.lastQuestDate ? new Date(save.lastQuestDate).toDateString() : null;
+  if(today !== lastQuest){
+    // Generate new quests
+    const shuffled = [...QUEST_TEMPLATES].sort(() => Math.random() - 0.5);
+    save.dailyQuests = shuffled.slice(0, 3).map(q => ({ ...q, progress: 0, claimed: false }));
+    save.lastQuestDate = Date.now();
+    saveGame();
+  }
+  const ql = document.getElementById('questList');
+  if(ql){
+    ql.innerHTML = save.dailyQuests.map((q, i) => `
+      <div class="quest-item ${q.claimed?'completed':''}">
+        <div class="quest-icon">${q.icon}</div>
+        <div class="quest-info">
+          <div class="quest-title">${q.title}</div>
+          <div class="quest-progress">${Math.min(q.progress, q.target)} / ${q.target}</div>
+          <div class="quest-bar"><div class="quest-bar-fill" style="width:${Math.min(100, q.progress/q.target*100)}%"></div></div>
+        </div>
+        <div class="quest-reward">🪙 ${q.reward}</div>
+      </div>
+    `).join('');
+  }
+  // Daily gift
+  const now = Date.now();
+  const lastDay = save.lastDaily ? new Date(save.lastDaily).toDateString() : null;
+  const today2 = new Date(now).toDateString();
+  const canClaim = lastDay !== today2;
+  const reward = 50 + save.dailyStreak * 25;
+  const dgc = document.getElementById('dailyGiftContent');
+  if(dgc){
+    dgc.innerHTML = canClaim
+      ? `<div class="share-card">
+           <div style="font-size:13px;letter-spacing:2px;color:var(--text-dim)">BUGUNGI SOVG'A</div>
+           <div style="font-size:42px;font-weight:900;color:var(--neon-gold);text-shadow:0 0 30px var(--neon-gold);margin:10px 0">🪙 ${reward}</div>
+           <div style="font-size:11px;color:var(--text-dim)">STREAK: ${save.dailyStreak} KUN 🔥</div>
+           <button class="menu-btn primary" style="margin-top:14px;min-width:200px" onclick="claimDaily()">OLISH</button>
+         </div>`
+      : `<div class="share-card" style="opacity:0.7">
+           <div style="font-size:13px;letter-spacing:2px;color:var(--text-dim)">ERTAGA QAYTIB KELING!</div>
+           <div style="font-size:50px;margin:14px 0">⏰</div>
+           <div style="font-size:11px;color:var(--text-dim)">STREAK: ${save.dailyStreak} KUN 🔥</div>
+         </div>`;
+  }
+}
+function claimDaily(){
+  const now = Date.now();
+  const yesterday = new Date(now - 86400000).toDateString();
+  const lastDay = save.lastDaily ? new Date(save.lastDaily).toDateString() : null;
+  if(lastDay === yesterday) save.dailyStreak++;
+  else if(lastDay !== new Date(now).toDateString()) save.dailyStreak = 1;
+  save.lastDaily = now;
+  const reward = 50 + (save.dailyStreak - 1) * 25;
+  save.coins += reward;
+  saveGame();
+  document.getElementById('dailyModal').classList.add('hidden');
+  showToast(`🎁 +${reward} TANGA!`, 'gold');
+  playSound('coin');
+  burstConfetti();
+  renderQuests();
+  if(save.dailyStreak >= 7) unlockAchievement('daily_7');
+  if(save.dailyStreak >= 30) unlockAchievement('daily_30');
+}
+function updateQuestProgress(track, value){
+  save.dailyQuests.forEach(q => {
+    if(q.claimed) return;
+    if(q.track === track){
+      q.progress = Math.max(q.progress, value);
+      if(q.progress >= q.target){
+        q.claimed = true;
+        save.coins += q.reward;
+        showToast(`✅ ${q.title} +${q.reward}`, 'green');
+      }
+    }
+  });
+  saveGame();
+}
+
+/* ============================================================
+   SHOP
+   ============================================================ */
+function filterShop(cat, e){
+  document.querySelectorAll('#shopScreen .tab-btn').forEach(b => b.classList.remove('active'));
+  if(e) e.target.classList.add('active');
+  renderShop(cat);
+}
+function renderShop(cat){
+  document.getElementById('shopCoins').textContent = save.coins;
+  const grid = document.getElementById('shopGrid');
+  grid.innerHTML = SHOP_ITEMS[cat].map(item => {
+    const isPowerup = cat === 'powerups';
+    const owned = isPowerup && save.inventory[item.id] >= (item.qty||1);
+    const canBuy = save.coins >= item.price;
+    return `
+      <div class="shop-item ${owned?'owned':''}">
+        <div class="item-icon">${item.icon}</div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-desc">${item.desc}</div>
+        <div class="item-price">🪙 ${item.price}</div>
+        <button class="buy-btn" ${!canBuy?'disabled':''} onclick="buyItem('${cat}','${item.id}')">
+          ${owned ? 'SOTIB OLINGAN' : (canBuy ? 'SOTIB OLISH' : 'TANGA YETMAYDI')}
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+function buyItem(cat, id){
+  const item = SHOP_ITEMS[cat].find(i => i.id === id);
+  if(!item) return;
+  if(save.coins < item.price){ showToast('❌ TANGA YETMAYDI!', 'red'); return; }
+  save.coins -= item.price;
+  if(cat === 'powerups'){
+    save.inventory[id] = (save.inventory[id]||0) + (item.qty||1);
+  } else if(cat === 'boosters'){
+    save.inventory[id] = (save.inventory[id]||0) + 1;
+  } else if(cat === 'cosmetics'){
+    if(!save.ownedCosmetics.includes(id)) save.ownedCosmetics.push(id);
+  }
+  saveGame();
+  playSound('purchase');
+  showToast(`✅ ${item.name} SOTIB OLINDI!`, 'green');
+  renderShop(cat);
+}
+
+/* ============================================================
+   GARAGE
+   ============================================================ */
+function renderGarage(){
+  document.getElementById('garageCoins').textContent = save.coins;
+  const grid = document.getElementById('garageGrid');
+  grid.innerHTML = Object.entries(CAR_DATA).map(([id, car]) => {
+    const owned = save.ownedCars.includes(id);
+    const current = save.currentCar === id;
+    const canBuy = save.coins >= car.price;
+    return `
+      <div class="shop-item ${owned?'owned':''}" style="${current?'border-color:var(--neon-cyan);box-shadow:0 0 30px rgba(0,212,255,0.5)':''}">
+        <div class="item-icon">${car.icon}</div>
+        <div class="item-name">${car.name}</div>
+        <div class="item-desc">${car.desc}</div>
+        ${car.speed > 1 ? `<div style="font-size:11px;color:var(--neon-green)">⚡ SPEED x${car.speed}</div>` : ''}
+        <div class="item-price">${car.price === 0 ? 'BEPUL' : '🪙 ' + car.price}</div>
+        <button class="buy-btn" ${!canBuy && !owned?'disabled':''}
+          onclick="${owned ? `selectCar('${id}')` : `buyCar('${id}')`}">
+          ${current ? '✓ TANLANGAN' : (owned ? 'TANLASH' : (canBuy ? 'SOTIB OLISH' : 'TANGA YETMAYDI'))}
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+function buyCar(id){
+  const car = CAR_DATA[id];
+  if(!car) return;
+  if(save.coins < car.price){ showToast('❌ TANGA YETMAYDI!', 'red'); return; }
+  save.coins -= car.price;
+  save.ownedCars.push(id);
+  save.currentCar = id;
+  saveGame();
+  playSound('purchase');
+  showToast(`🚗 ${car.name} SOTIB OLINDI!`, 'green');
+  renderGarage();
+  if(save.ownedCars.length >= 3) unlockAchievement('collector');
+}
+function selectCar(id){
+  save.currentCar = id;
+  saveGame();
+  playSound('click');
+  showToast(`🚗 ${CAR_DATA[id].name} TANLANDI!`, 'accent');
+  renderGarage();
+}
+
+/* ============================================================
+   LEADERBOARD
+   ============================================================ */
+function renderLeaderboard(){
+  const list = document.getElementById('lbList');
+  const lb = [...save.leaderboard].sort((a,b) => b.wpm - a.wpm).slice(0, 10);
+  if(lb.length === 0){
+    list.innerHTML = '<div style="padding:30px;color:var(--text-dim);text-align:center">Hali natijalar yo\'q. O\'ynang!</div>';
+    return;
+  }
+  list.innerHTML = lb.map((entry, i) => `
+    <div class="lb-item ${entry.me?'me':''}">
+      <div class="lb-rank ${i===0?'top1':i===1?'top2':i===2?'top3':''}">#${i+1}</div>
+      <div class="lb-name">${entry.name}</div>
+      <div class="lb-score">${entry.wpm} WPM</div>
+    </div>
+  `).join('');
+}
+function addToLeaderboard(wpm){
+  save.leaderboard.push({ name: save.playerName, wpm, me: true, date: Date.now() });
+  save.leaderboard.sort((a,b) => b.wpm - a.wpm);
+  save.leaderboard = save.leaderboard.slice(0, 20);
+  saveGame();
+}
+
+/* ============================================================
+   ACHIEVEMENTS
+   ============================================================ */
+function renderAchievements(){
+  document.getElementById('achList').innerHTML = ACHIEVEMENTS.map(a => `
+    <div class="achievement ${save.achievements[a.id]?'unlocked':''}">
+      <div class="ach-ico">${a.ico}</div>
+      <div class="ach-info">
+        <div class="ach-title">${a.title}</div>
+        <div class="ach-desc">${a.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function unlockAchievement(id){
+  if(save.achievements[id]) return;
+  const a = ACHIEVEMENTS.find(x => x.id === id);
+  if(!a) return;
+  save.achievements[id] = Date.now();
+  saveGame();
+  playSound('achievement');
+  document.getElementById('achModalIcon').textContent = a.ico;
+  document.getElementById('achModalTitle').textContent = a.title;
+  document.getElementById('achModalDesc').textContent = a.desc;
+  document.getElementById('achModal').classList.remove('hidden');
+}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+function switchStatsTab(tab, e){
+  document.querySelectorAll('#statsScreen .tab-btn').forEach(b => b.classList.remove('active'));
+  if(e) e.target.classList.add('active');
+  renderStats(tab);
+}
+function renderStats(tab){
+  const s = save.stats;
+  const container = document.getElementById('statsContent');
+  if(tab === 'overview'){
+    const winRate = s.totalGames > 0 ? Math.round((s.totalWins/s.totalGames)*100) : 0;
+    const acc = (s.totalChars + s.totalWrong) > 0 ? Math.round((s.totalChars/(s.totalChars+s.totalWrong))*100) : 100;
+    container.innerHTML = `<div class="result-stats" style="max-width:580px">
+      <div class="stat-box"><div class="stat-num">${s.totalGames}</div><div class="stat-label">O'YINLAR</div></div>
+      <div class="stat-box"><div class="stat-num">${s.totalWins}</div><div class="stat-label">G'ALABALAR</div></div>
+      <div class="stat-box"><div class="stat-num">${winRate}%</div><div class="stat-label">WIN RATE</div></div>
+      <div class="stat-box"><div class="stat-num">${s.bestWPM}</div><div class="stat-label">BEST WPM</div></div>
+      <div class="stat-box"><div class="stat-num">${s.bestCombo}</div><div class="stat-label">MAX COMBO</div></div>
+      <div class="stat-box"><div class="stat-num">${acc}%</div><div class="stat-label">O'RT. ANIQLIK</div></div>
+      <div class="stat-box"><div class="stat-num">${s.totalChars}</div><div class="stat-label">JAMI HARFLAR</div></div>
+      <div class="stat-box"><div class="stat-num">${s.perfectRuns}</div><div class="stat-label">PERFECT RUNS</div></div>
+    </div>`;
+  } else if(tab === 'heatmap'){
+    const errors = s.charErrors || {};
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    const max = Math.max(1, ...alphabet.map(c => errors[c]||0));
+    container.innerHTML = `
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;letter-spacing:2px">XATO QILGAN HARFLAR</div>
+      <div class="heatmap">
+        ${alphabet.map(c => {
+          const count = errors[c] || 0;
+          const heat = count === 0 ? 0 : Math.min(4, Math.ceil(count / max * 4));
+          return `<div class="heat-cell" data-heat="${heat}">${c}</div>`;
+        }).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:14px">
+        🟩 Kam xato &nbsp; 🟨 O'rtacha &nbsp; 🟧 Ko'p &nbsp; 🟥 Juda ko'p
+      </div>`;
+  } else if(tab === 'history'){
+    const hist = s.stageHistory.slice(-20).reverse();
+    if(hist.length === 0){
+      container.innerHTML = '<div style="padding:30px;color:var(--text-dim)">Tarix bo\'sh</div>';
+    } else {
+      const maxWPM = Math.max(...hist.map(h => h.wpm), 10);
+      container.innerHTML = `
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:14px;letter-spacing:2px">OXIRGI 20 O'YIN</div>
+        <svg viewBox="0 0 500 200" style="width:100%;max-width:500px;height:200px;background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid rgba(0,212,255,0.2)">
+          ${hist.map((h, i) => {
+            const x = (i / Math.max(1, hist.length-1)) * 480 + 10;
+            const y = 190 - (h.wpm / maxWPM) * 170;
+            return `<circle cx="${x}" cy="${y}" r="4" fill="${h.won?'#00ff88':'#ff2244'}" filter="drop-shadow(0 0 6px ${h.won?'#00ff88':'#ff2244'})"/>`;
+          }).join('')}
+          ${hist.map((h, i) => {
+            if(i === 0) return '';
+            const x1 = ((i-1) / Math.max(1, hist.length-1)) * 480 + 10;
+            const y1 = 190 - (hist[i-1].wpm / maxWPM) * 170;
+            const x2 = (i / Math.max(1, hist.length-1)) * 480 + 10;
+            const y2 = 190 - (h.wpm / maxWPM) * 170;
+            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>`;
+          }).join('')}
+        </svg>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:10px">
+          🟢 G'alaba &nbsp; 🔴 Mag'lubiyat &nbsp; | &nbsp; Maks: ${maxWPM} WPM
+        </div>
+      `;
+    }
+  }
+}
+
+/* ============================================================
+   STARS / WEATHER
+   ============================================================ */
+function initStars(){
+  const c = document.getElementById('stars');
+  c.innerHTML = '';
+  for(let i=0; i<90; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = 1+Math.random()*3;
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = Math.random()*65 + '%';
+    s.style.width = size + 'px'; s.style.height = size + 'px';
+    s.style.animationDelay = Math.random()*3 + 's';
+    const r = Math.random();
+    if(r > 0.75){ s.style.background = '#00d4ff'; s.style.boxShadow = '0 0 10px #00d4ff'; }
+    else if(r > 0.55){ s.style.background = '#ffcc00'; s.style.boxShadow = '0 0 10px #ffcc00'; }
+    else if(r > 0.4){ s.style.background = '#ff0080'; s.style.boxShadow = '0 0 10px #ff0080'; }
+    else { s.style.boxShadow = '0 0 8px #fff'; }
+    c.appendChild(s);
+  }
+}
+function initWeather(){
+  const w = document.getElementById('weatherLayer');
+  if(!w) return;
+  w.innerHTML = '';
+  if(!save.settings.weather) return;
+  const type = Math.random();
+  if(type < 0.15){
+    // Rain
+    for(let i=0; i<60; i++){
+      const d = document.createElement('div');
+      d.className = 'rain-drop';
+      d.style.left = Math.random()*100 + '%';
+      d.style.animationDuration = (0.5 + Math.random()*0.5) + 's';
+      d.style.animationDelay = Math.random()*2 + 's';
+      w.appendChild(d);
+    }
+  } else if(type < 0.25){
+    // Snow
+    for(let i=0; i<50; i++){
+      const d = document.createElement('div');
+      d.className = 'snow-flake';
+      d.style.left = Math.random()*100 + '%';
+      d.style.animationDuration = (3 + Math.random()*3) + 's';
+      d.style.animationDelay = Math.random()*3 + 's';
+      w.appendChild(d);
+    }
+  }
+}
+
+/* ============================================================
+   START GAME
+   ============================================================ */
+function startStage(stage){
+  G.currentStage = stage;
+  G.config = getStageConfig(stage);
+  startGame();
+}
+function startGame(){
+  G.playerProgress = 0; G.correctChars = 0; G.totalChars = 0; G.wrongChars = 0;
+  G.combo = 0; G.maxCombo = 0; G.raceTime = 0; G.currentText = ''; G.chars = [];
+  G.enemies = []; G.raceFinished = false; G.lockedInput = true;
+  G.lastLoopTime = 0; G.lastValLen = 0; G._lastCombo = 0;
+  G.powerupsActive = { turbo:0, shield:0, freeze:0, auto:0, hint:0 };
+  G.shieldActive = false; G.autoRemaining = 0;
+  G.earnedCoins = 0; G.earnedXP = 0; G.perfect = true;
+  G.wpmSamples = []; G.chartTimer = 0; G.lastWPM = 0;
+
+  clearInterval(G.timerInterval);
+  if(G.raf) cancelAnimationFrame(G.raf);
+
+  hideAllScreens();
+  gameEl.style.display = 'block';
+
+  inputEl.value = '';
+  inputEl.disabled = true;
+  inputEl.classList.remove('error');
+  textEl.innerHTML = '';
+
+  document.getElementById('levelDisplay').textContent = G.currentStage + (G.config.isBoss ? ' 👹' : '');
+  document.getElementById('comboDisplay').textContent = 'x0';
+
+  initStars();
+  initWeather();
+  buildTrack();
+  updatePowerupUI();
+  updatePowerupInventoryUI();
+  document.getElementById('liveChart').style.display = save.settings.chart ? 'block' : 'none';
+
+  G.state = 'countdown';
+  runCountdown(() => {
+    G.state = 'playing';
+    G.lockedInput = false;
+    inputEl.disabled = false;
+    nextText();
+    G.startTime = performance.now();
+    startTimer();
+    G.lastLoopTime = performance.now();
+    G.raf = requestAnimationFrame(gameLoop);
+    inputEl.focus();
+  });
+}
+function restartGame(){ startGame(); }
+function exitToMenu(){
+  G.state = 'menu';
+  clearInterval(G.timerInterval);
+  if(G.raf) cancelAnimationFrame(G.raf);
+  gameEl.style.display = 'none';
+  hideAllScreens();
+  document.getElementById('menuScreen').classList.remove('hidden');
+}
+function pauseGame(){
+  if(G.state !== 'playing') return;
+  G.state = 'paused';
+  clearInterval(G.timerInterval);
+  if(G.raf) cancelAnimationFrame(G.raf);
+  document.getElementById('pauseScreen').classList.remove('hidden');
+}
+function resumeGame(){
+  if(G.state !== 'paused') return;
+  G.state = 'playing';
+  G.startTime = performance.now() - G.raceTime;
+  G.lastLoopTime = performance.now();
+  startTimer();
+  G.raf = requestAnimationFrame(gameLoop);
+  document.getElementById('pauseScreen').classList.add('hidden');
+  inputEl.focus();
+}
+function runCountdown(callback){
+  const cd = document.getElementById('countdown');
+  const num = document.getElementById('countdownNum');
+  cd.classList.remove('hidden');
+  let n = 3;
+  const tick = () => {
+    num.textContent = n === 0 ? 'GO!' : String(n);
+    num.style.animation = 'none'; void num.offsetWidth;
+    num.style.animation = 'countPop 0.9s ease-out';
+    if(n === 0){
+      setTimeout(() => { cd.classList.add('hidden'); callback(); }, 700);
+    } else { n--; setTimeout(tick, 900); }
+  };
+  tick();
+}
+
+/* ============================================================
+   BUILD TRACK
+   ============================================================ */
+function buildTrack(){
+  trackEl.querySelectorAll('.lane').forEach(l => l.remove());
+  const cfg = G.config;
+  const carColors = [
+    { main:'#ff2244', accent:'#ff6688' },
+    { main:'#00ff88', accent:'#88ffcc' },
+    { main:'#b429ff', accent:'#dd88ff' },
+    { main:'#ffcc00', accent:'#ffee88' },
+    { main:'#00fff0', accent:'#88ffff' },
+    { main:'#ff8800', accent:'#ffbb66' }
+  ];
+  const names = ['Rustam','Dilnoza','Aziz','Malika','Bekzod','Zarina'];
+
+  const pCar = CAR_DATA[save.currentCar] || CAR_DATA.default;
+  const pLane = document.createElement('div');
+  pLane.className = 'lane active';
+  pLane.style.top = '0px';
+  pLane.innerHTML = `
+    <div class="car player" id="playerCar" style="left:5px">
+      ${carSVG(pCar.color, pCar.accent, false, save.currentCar)}
+    </div>`;
+  trackEl.appendChild(pLane);
+
+  for(let i=0; i<cfg.enemyCount; i++){
+    const lane = document.createElement('div');
+    lane.className = 'lane';
+    lane.style.top = ((i+1)*60) + 'px';
+    const isBossCar = cfg.isBoss && i===0;
+    const c = isBossCar ? { main:'#ff2244', accent:'#ffcc00' } : carColors[i % carColors.length];
+    const name = isBossCar ? '👹 BOSS ' + Math.ceil(G.currentStage/10) : names[i % names.length];
+    lane.innerHTML = `
+      <div class="car enemy" id="enemyCar${i}" style="left:5px">
+        <div class="car-label">${name}</div>
+        ${carSVG(c.main, c.accent, isBossCar)}
+      </div>`;
+    trackEl.appendChild(lane);
+
+    const speedMod = isBossCar ? 1.15 : (0.85 + Math.random()*0.3);
+    G.enemies.push({
+      name, progress: 0,
+      baseSpeed: cfg.enemySpeed * speedMod,
+      el: document.getElementById('enemyCar'+i),
+      frozen: 0
+    });
+  }
+  const pEl = document.getElementById('playerCar');
+  if(pEl) pEl.style.left = '5px';
+}
+
+/* ============================================================
+   NEXT TEXT
+   ============================================================ */
+function nextText(){
+  const diff = getDifficultyForStage(G.currentStage);
+  const bank = BASE_TEXTS[diff];
+  const cfg = G.config;
+  let text = '', attempts = 0;
+  while(text.length < cfg.textLength - 5 && attempts < 12){
+    const t = bank[Math.floor(Math.random()*bank.length)];
+    text = text ? text + ' ' + t : t;
+    attempts++;
+  }
+  if(text.length > cfg.textLength + 20){
+    text = text.substring(0, cfg.textLength + 20);
+    const lastSpace = text.lastIndexOf(' ');
+    if(lastSpace > cfg.textLength - 15) text = text.substring(0, lastSpace);
+  }
+  G.currentText = text;
+  textEl.innerHTML = '';
+  G.chars = [];
+  for(let i=0; i<text.length; i++){
+    const span = document.createElement('span');
+    span.className = 'char';
+    if(i === 0) span.classList.add('current');
+    // Critical letter (every 7-10 chars)
+    if(save.settings.crit && i > 0 && i % 8 === 0 && text[i] !== ' '){
+      span.classList.add('critical');
+    }
+    span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+    textEl.appendChild(span);
+    G.chars.push(span);
+  }
+  inputEl.value = '';
+  inputEl.classList.remove('error');
+  inputEl.disabled = false;
+  inputEl.focus();
+}
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+inputEl.addEventListener('input', () => {
+  if(G.state !== 'playing' || G.lockedInput) return;
+  let val = inputEl.value;
+  const target = G.currentText;
+
+  if(G.autoRemaining > 0 && val.length > G.lastValLen){
+    const idx = val.length - 1;
+    if(idx < target.length && val[idx] !== target[idx]){
+      val = val.substring(0, idx) + target[idx];
+      inputEl.value = val;
+    }
+    G.autoRemaining--;
+  }
+
+  let hasError = false;
+  for(let i=0; i<G.chars.length; i++){
+    const c = G.chars[i];
+    c.classList.remove('correct','wrong','current');
+    if(i < val.length){
+      if(val[i] === target[i]) c.classList.add('correct');
+      else { c.classList.add('wrong'); hasError = true; }
+    } else if(i === val.length){ c.classList.add('current'); }
+  }
+
+  const lastIdx = val.length - 1;
+  if(lastIdx >= 0 && lastIdx < target.length && val[lastIdx] !== target[lastIdx]){
+    if(G.shieldActive){
+      G.shieldActive = false;
+      showToast('🛡️ SHIELD HIMOYA QILDI!', 'purple');
+      playSound('powerup');
+    } else {
+      if(!inputEl.classList.contains('error')){
+        inputEl.classList.add('error');
+        setTimeout(()=>inputEl.classList.remove('error'), 300);
+      }
+      if(G.combo > 3) showWrongStreak();
+      G.combo = 0; G.wrongChars++; G.perfect = false;
+      // Track char error
+      const ch = target[lastIdx];
+      if(ch && ch !== ' '){
+        save.stats.charErrors[ch] = (save.stats.charErrors[ch] || 0) + 1;
+      }
+      if(save.settings.shake) shakeScreen();
+    }
+    updateHUD(); return;
+  }
+
+  if(!hasError){
+    const prevLen = G.lastValLen || 0;
+    const newlyTyped = Math.max(0, val.length - prevLen);
+    G.lastValLen = val.length;
+    if(newlyTyped > 0){
+      G.correctChars += newlyTyped;
+      G.totalChars += newlyTyped;
+      G.combo += newlyTyped;
+      if(G.combo > G.maxCombo) G.maxCombo = G.combo;
+      G.earnedCoins += newlyTyped;
+      playSound('correct');
+      const step = 100 / target.length;
+      const turboMult = G.powerupsActive.turbo > 0 ? 1.6 : 1;
+      const comboMult = 1 + Math.min(G.combo, 20) * 0.025;
+      // Critical letters give bonus
+      let critBonus = 1;
+      for(let i = prevLen; i < val.length; i++){
+        if(G.chars[i] && G.chars[i].classList.contains('critical')) critBonus = 1.5;
+      }
+      G.playerProgress = Math.min(100, G.playerProgress + step * newlyTyped * turboMult * comboMult * critBonus);
+    }
+  } else {
+    const prevLen = G.lastValLen || 0;
+    G.lastValLen = val.length;
+    if(val.length > prevLen) G.totalChars += (val.length - prevLen);
+  }
+
+  if(val === target){
+    G.playerProgress = Math.min(100, G.playerProgress + 1.5);
+    G.lastValLen = 0;
+    if(G.playerProgress < 100){
+      setTimeout(() => { G.lastValLen = 0; nextText(); }, 80);
+    }
+  }
+
+  updateHUD();
+
+  if(G.combo > 0 && G.combo % 20 === 0 && G._lastCombo !== G.combo){
+    G._lastCombo = G.combo;
+    showCorrectStreak('COMBO x' + G.combo);
+    playSound('combo');
+    burstParticles(8);
+  }
+});
+inputEl.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){ pauseGame(); }
+});
+
+/* ============================================================
+   EFFECTS
+   ============================================================ */
+function showWrongStreak(){
+  const el = document.getElementById('streakWrong');
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  playSound('wrong');
+}
+function showCorrectStreak(text){
+  const el = document.getElementById('streakCorrect');
+  el.textContent = text;
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+}
+function shakeScreen(){
+  gameEl.classList.remove('shake'); void gameEl.offsetWidth; gameEl.classList.add('shake');
+  setTimeout(() => gameEl.classList.remove('shake'), 400);
+}
+function burstParticles(count){
+  if(!save.settings.fx) return;
+  const pEl = document.getElementById('playerCar');
+  if(!pEl) return;
+  const rect = pEl.getBoundingClientRect();
+  for(let i=0; i<count; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const color = ['#00ff88','#00fff0','#ffcc00','#b429ff','#00d4ff'][Math.floor(Math.random()*5)];
+    p.style.background = color;
+    p.style.boxShadow = `0 0 12px ${color}`;
+    p.style.left = (rect.left + rect.width/2) + 'px';
+    p.style.top = (rect.top + rect.height/2) + 'px';
+    p.style.setProperty('--dx', (Math.random()-0.5)*180 + 'px');
+    p.style.setProperty('--dy', (Math.random()-0.5)*180 + 'px');
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+function burstConfetti(){
+  if(!save.settings.fx) return;
+  const colors = ['#00d4ff','#ffcc00','#00ff88','#ff0080','#b429ff','#00fff0'];
+  for(let i=0; i<100; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.background = colors[i%colors.length];
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.animationDelay = Math.random()*0.7 + 's';
+    c.style.animationDuration = (2+Math.random()*2)+'s';
+    if(Math.random() > 0.5) c.style.borderRadius = '50%';
+    c.style.boxShadow = `0 0 10px ${colors[i%colors.length]}`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+/* ============================================================
+   POWER-UPS
+   ============================================================ */
+function updatePowerupInventoryUI(){
+  ['turbo','shield','freeze','auto','hint'].forEach(k => {
+    const el = document.getElementById('pu'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(el) el.textContent = save.inventory[k] || 0;
+    const wrap = document.querySelector(`.powerup[data-pu="${k}"]`);
+    if(wrap) wrap.classList.toggle('available', (save.inventory[k]||0) > 0);
+  });
+}
+function updatePowerupUI(){
+  ['turbo','shield','freeze','auto','hint'].forEach(k => {
+    const wrap = document.querySelector(`.powerup[data-pu="${k}"]`);
+    if(wrap) wrap.classList.toggle('active', G.powerupsActive[k] > 0);
+  });
+}
+function activatePowerup(type){
+  if(G.state !== 'playing') return;
+  if((save.inventory[type]||0) <= 0){
+    showToast('❌ TUGAGAN! DO\'KONDAN SOTIB OLING', 'red'); return;
+  }
+  save.inventory[type]--;
+  saveGame();
+  updatePowerupInventoryUI();
+  playSound('powerup');
+  const flashColors = { turbo:'#00d4ff', shield:'#b429ff', freeze:'#00fff0', auto:'#ffcc00', hint:'#00ff88' };
+  const f = document.createElement('div');
+  f.className = 'pu-flash';
+  f.style.background = `radial-gradient(circle,${flashColors[type]}88,transparent 70%)`;
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 800);
+
+  if(type === 'turbo'){
+    G.powerupsActive.turbo = 5000;
+    document.getElementById('playerCar').classList.add('turbo');
+    showToast('⚡ TURBO 5S!', 'accent');
+  } else if(type === 'shield'){
+    G.shieldActive = true; G.powerupsActive.shield = 1;
+    showToast('🛡️ SHIELD FAOLLASHDI!', 'purple');
+  } else if(type === 'freeze'){
+    G.powerupsActive.freeze = 3000;
+    G.enemies.forEach(e => {
+      e.frozen = 3000;
+      if(e.el) e.el.classList.add('frozen');
+    });
+    showToast('❄️ RAQIBLAR MUZLATILDI!', 'accent');
+  } else if(type === 'auto'){
+    G.autoRemaining = 10; G.powerupsActive.auto = 10;
+    showToast('🎯 AUTO-CORRECT 10 HARF!', 'gold');
+  } else if(type === 'hint'){
+    // Highlight next 3 chars
+    const val = inputEl.value;
+    for(let i=val.length; i<Math.min(val.length+3, G.chars.length); i++){
+      G.chars[i].style.color = '#ffcc00';
+      G.chars[i].style.textShadow = '0 0 15px #ffcc00';
+    }
+    G.powerupsActive.hint = 3000;
+    showToast('💡 KEYINGI 3 HARF KO\'RSATILDI!', 'green');
+  }
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer(){
+  clearInterval(G.timerInterval);
+  G.timerInterval = setInterval(() => {
+    if(G.state !== 'playing') return;
+    G.raceTime = performance.now() - G.startTime;
+    const t = G.raceTime / 1000;
+    const m = Math.floor(t / 60);
+    const s = Math.floor(t % 60);
+    document.getElementById('timeDisplay').textContent =
+      String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }, 100);
+}
+
+/* ============================================================
+   HUD + CHART
+   ============================================================ */
+function updateHUD(){
+  const pct = Math.min(100, Math.round(G.playerProgress));
+  document.getElementById('raceStatus').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('comboDisplay').textContent = 'x' + G.combo;
+
+  const maxLeft = Math.max(50, trackEl.clientWidth - 90);
+  const pEl = document.getElementById('playerCar');
+  if(pEl) pEl.style.left = (5 + (G.playerProgress / 100) * maxLeft) + 'px';
+  G.enemies.forEach(e => {
+    if(e.el) e.el.style.left = (5 + (e.progress / 100) * maxLeft) + 'px';
+  });
+
+  const elapsed = Math.max(1, (performance.now() - G.startTime) / 1000);
+  const wpm = Math.round((G.correctChars / 5) / (elapsed / 60));
+  const wpmDisplay = (wpm > 0 && isFinite(wpm)) ? wpm : 0;
+  document.getElementById('wpmDisplay').textContent = wpmDisplay;
+  const acc = G.totalChars > 0 ? Math.round((G.correctChars / G.totalChars) * 100) : 100;
+  document.getElementById('accDisplay').textContent = Math.max(0, acc) + '%';
+
+  const all = [G.playerProgress, ...G.enemies.map(e => e.progress)];
+  const sorted = [...all].sort((a,b) => b - a);
+  const myRank = sorted.indexOf(G.playerProgress) + 1;
+  document.getElementById('rankDisplay').textContent = myRank + ' / ' + all.length;
+
+  // Chart samples every ~500ms
+  G.chartTimer += 16;
+  if(G.chartTimer > 500 && save.settings.chart){
+    G.chartTimer = 0;
+    G.wpmSamples.push(wpmDisplay);
+    if(G.wpmSamples.length > 40) G.wpmSamples.shift();
+    drawChart();
+  }
+}
+function drawChart(){
+  const svg = document.getElementById('chartSvg');
+  if(!svg) return;
+  const samples = G.wpmSamples;
+  if(samples.length < 2){ svg.innerHTML = ''; return; }
+  const max = Math.max(...samples, 20);
+  const points = samples.map((v, i) => {
+    const x = (i / (samples.length-1)) * 176 + 2;
+    const y = 76 - (v / max) * 70;
+    return `${x},${y}`;
+  }).join(' ');
+  const areaPoints = `2,78 ${points} 178,78`;
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(0,212,255,0.6)"/>
+        <stop offset="100%" stop-color="rgba(0,212,255,0)"/>
+      </linearGradient>
+    </defs>
+    <polygon points="${areaPoints}" fill="url(#chartGrad)"/>
+    <polyline points="${points}" fill="none" stroke="#00fff0" stroke-width="2" stroke-linejoin="round" filter="drop-shadow(0 0 4px #00fff0)"/>
+    <circle cx="${2 + ((samples.length-1)/(samples.length-1))*176}" cy="${76 - (samples[samples.length-1]/max)*70}" r="3" fill="#ffcc00" filter="drop-shadow(0 0 6px #ffcc00)"/>
+  `;
+}
+
+/* ============================================================
+   GAME LOOP
+   ============================================================ */
+function gameLoop(now){
+  if(G.state !== 'playing') return;
+  G.raf = requestAnimationFrame(gameLoop);
+  const dt = Math.min(50, now - G.lastLoopTime);
+  G.lastLoopTime = now;
+
+  ['turbo','freeze'].forEach(k => {
+    if(G.powerupsActive[k] > 0){
+      G.powerupsActive[k] = Math.max(0, G.powerupsActive[k] - dt);
+      if(G.powerupsActive[k] === 0){
+        if(k === 'turbo'){
+          const pEl = document.getElementById('playerCar');
+          if(pEl) pEl.classList.remove('turbo');
+        }
+        if(k === 'freeze'){
+          G.enemies.forEach(e => {
+            e.frozen = 0;
+            if(e.el) e.el.classList.remove('frozen');
+          });
+        }
+      }
+    }
+  });
+  if(G.powerupsActive.auto > 0 && G.autoRemaining === 0) G.powerupsActive.auto = 0;
+  updatePowerupUI();
+
+  if(save.settings.fx && Math.random() < 0.2){
+    const s = document.createElement('div');
+    s.className = 'speed-line';
+    s.style.top = (Math.random()*60+10) + '%';
+    s.style.right = '-10px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 700);
+  }
+
+  G.enemies.forEach(e => {
+    if(e.frozen > 0){ e.frozen -= dt; return; }
+    if(Math.random() < 0.02){
+      e.baseSpeed = Math.max(1, e.baseSpeed + (Math.random() - 0.5) * 0.5);
+    }
+    e.progress += e.baseSpeed * (dt / 1000) * 1.6;
+    if(e.progress >= 100){
+      e.progress = 100;
+      if(!G.raceFinished){
+        G.raceFinished = true;
+        setTimeout(() => endRace(e.name), 300);
+        return;
+      }
+    }
+  });
+
+  if(G.playerProgress >= 100 && !G.raceFinished){
+    G.playerProgress = 100;
+    G.raceFinished = true;
+    setTimeout(() => endRace('SIZ'), 300);
+  }
+  updateHUD();
+}
+
+/* ============================================================
+   END RACE
+   ============================================================ */
+function endRace(winner){
+  G.state = 'finished';
+  clearInterval(G.timerInterval);
+  if(G.raf) cancelAnimationFrame(G.raf);
+
+  const won = winner === 'SIZ';
+  const elapsed = Math.max(1, (performance.now() - G.startTime) / 1000);
+  const wpm = Math.round((G.correctChars / 5) / (elapsed / 60));
+  const acc = G.totalChars > 0 ? Math.round((G.correctChars / G.totalChars) * 100) : 100;
+  const t = G.raceTime / 1000;
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60);
+  const all = [G.playerProgress, ...G.enemies.map(e => e.progress)];
+  const sorted = [...all].sort((a,b) => b - a);
+  const myRank = sorted.indexOf(G.playerProgress) + 1;
+
+  let stars = 0;
+  if(won){
+    stars = 1;
+    if(wpm >= 40 && acc >= 90) stars = 2;
+    if(wpm >= 70 && acc >= 95) stars = 3;
+  }
+  const coins = won ? (G.earnedCoins + 50 + G.currentStage * 5 + (stars * 25)) : Math.floor(G.earnedCoins * 0.5);
+  const xp = won ? (30 + G.currentStage * 3 + stars * 10) : Math.floor(10 + G.currentStage);
+
+  // Stats
+  save.stats.totalGames++;
+  if(won) save.stats.totalWins++;
+  save.stats.totalChars += G.correctChars;
+  save.stats.totalWrong += G.wrongChars;
+  save.stats.totalTime += Math.floor(t);
+  save.stats.totalCoins += coins;
+  if(wpm > save.stats.bestWPM) save.stats.bestWPM = wpm;
+  if(G.maxCombo > save.stats.bestCombo) save.stats.bestCombo = G.maxCombo;
+  if(won && G.perfect) save.stats.perfectRuns++;
+  save.stats.stageHistory.push({ stage: G.currentStage, wpm, acc, won, date: Date.now() });
+  if(save.stats.stageHistory.length > 100) save.stats.stageHistory.shift();
+
+  save.coins += coins;
+  save.xp += xp;
+
+  // Quest tracking
+  updateQuestProgress('games', save.stats.totalGames);
+  if(won) updateQuestProgress('wins', (save.dailyQuests.find(q => q.track === 'wins')?.progress || 0) + 1);
+  if(wpm >= 50) updateQuestProgress('wpm50', 1);
+  if(G.maxCombo >= 20) updateQuestProgress('combo20', 1);
+  if(won && G.perfect) updateQuestProgress('perfect', 1);
+  if(won && G.config.isBoss) updateQuestProgress('boss', 1);
+  updateQuestProgress('coins', save.coins);
+  updateQuestProgress('chars', save.stats.totalChars);
+
+  if(won && G.currentStage === save.unlockedStages && save.unlockedStages < 100){
+    save.unlockedStages = G.currentStage + 1;
+  }
+  if(won){
+    save.completedStages[G.currentStage] = true;
+    const prev = save.stageStars[G.currentStage] || 0;
+    if(stars > prev) save.stageStars[G.currentStage] = stars;
+  }
+
+  // Achievements
+  if(won) unlockAchievement('first_win');
+  if(G.maxCombo >= 30) unlockAchievement('combo_30');
+  if(G.maxCombo >= 50) unlockAchievement('combo_50');
+  if(wpm >= 50) unlockAchievement('wpm_50');
+  if(wpm >= 80) unlockAchievement('wpm_80');
+  if(wpm >= 100) unlockAchievement('wpm_100');
+  if(wpm >= 150) unlockAchievement('wpm_150');
+  if(won && G.perfect) unlockAchievement('perfect');
+  if(save.completedStages[10]) unlockAchievement('stage_10');
+  if(save.completedStages[25]) unlockAchievement('stage_25');
+  if(save.completedStages[50]) unlockAchievement('stage_50');
+  if(save.completedStages[75]) unlockAchievement('stage_75');
+  if(save.completedStages[100]) unlockAchievement('stage_100');
+  if(save.coins >= 1000) unlockAchievement('rich');
+  if(save.coins >= 5000) unlockAchievement('very_rich');
+  if(save.level >= 10) unlockAchievement('level_10');
+  if(save.level >= 25) unlockAchievement('level_25');
+  if(save.level >= 50) unlockAchievement('level_50');
+
+  let leveledUp = false;
+  while(save.xp >= save.xpNeeded){
+    save.xp -= save.xpNeeded;
+    save.level++;
+    save.xpNeeded = Math.floor(save.xpNeeded * 1.35);
+    leveledUp = true;
+  }
+
+  addToLeaderboard(wpm);
+  saveGame();
+
+  document.getElementById('resultTrophy').textContent = won ? (stars === 3 ? '🏆' : stars === 2 ? '🥈' : '🥉') : '😢';
+  const titleEl = document.getElementById('resultTitle');
+  titleEl.textContent = won ? 'G\'ALABA!' : 'YUTQAZDINGIZ';
+  titleEl.style.background = won
+    ? 'linear-gradient(135deg,#00ff88,#00d4ff,#ffcc00)'
+    : 'linear-gradient(135deg,#ff2244,#b429ff)';
+  titleEl.style.webkitBackgroundClip = 'text';
+  titleEl.style.backgroundClip = 'text';
+  titleEl.style.webkitTextFillColor = 'transparent';
+
+  document.getElementById('resultSubtitle').textContent = won
+    ? `BOSQICH ${G.currentStage} TUGATILDI! ${stars === 3 ? 'MUKAMMAL!' : 'AJOYIB!'}`
+    : `${winner} SIZDAN OLDIN YETDI. YANA URINIB KO'RING!`;
+
+  document.getElementById('finalWPM').textContent = wpm > 0 && isFinite(wpm) ? wpm : 0;
+  document.getElementById('finalAccuracy').textContent = Math.max(0, acc) + '%';
+  document.getElementById('finalTime').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  document.getElementById('finalRank').textContent = myRank;
+  document.getElementById('finalCoins').textContent = coins;
+  document.getElementById('finalXP').textContent = xp;
+  document.getElementById('finalStars').textContent = stars + '/3';
+  document.getElementById('finalCombo').textContent = 'x' + G.maxCombo;
+
+  document.getElementById('nextLevelBtn').style.display = (won && G.currentStage < 100) ? 'block' : 'none';
+  document.getElementById('resultScreen').classList.remove('hidden');
+
+  if(won){ playSound('win'); burstConfetti(); } else { playSound('lose'); }
+
+  if(leveledUp){
+    setTimeout(() => {
+      document.getElementById('newLevelNum').textContent = save.level;
+      document.getElementById('levelUpModal').classList.remove('hidden');
+      playSound('levelup');
+    }, 800);
+  }
+}
+function closeLevelUp(){ document.getElementById('levelUpModal').classList.add('hidden'); }
+function nextLevel(){ if(G.currentStage >= 100) return; startStage(G.currentStage + 1); }
+
+/* ============================================================
+   SHARE
+   ============================================================ */
+function shareResult(){
+  const wpm = document.getElementById('finalWPM').textContent;
+  const acc = document.getElementById('finalAccuracy').textContent;
+  const time = document.getElementById('finalTime').textContent;
+  const stars = document.getElementById('finalStars').textContent;
+  const txt = `🏎️ TYPING RACE PRO\n📍 Bosqich: ${G.currentStage}\n⚡ WPM: ${wpm}\n🎯 Aniqlik: ${acc}\n⏱️ Vaqt: ${time}\n🌟 Yulduz: ${stars}\n\nSen ham sinab ko'r!`;
+  if(navigator.share){
+    navigator.share({ title: 'Typing Race PRO', text: txt }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(txt).then(() => {
+      showToast('📋 NATIJA NUSXALANDI!', 'green');
+    }).catch(() => {
+      prompt('Nusxalash uchun:', txt);
+    });
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    if(G.state === 'playing') pauseGame();
+    else if(G.state === 'paused') resumeGame();
+  }
+});
+document.addEventListener('click', (e) => {
+  if(G.state === 'playing' && !e.target.closest('button') && !e.target.closest('input') && !e.target.closest('.powerup')){
+    inputEl.focus();
+  }
+});
+
+loadSave();
+initStars();
+</script>
+</body>
+</html>
